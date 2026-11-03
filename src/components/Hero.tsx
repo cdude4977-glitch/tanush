@@ -1,15 +1,17 @@
 import React from 'react';
 import { EVENT_CONFIG } from '../config/eventConfig.ts';
-import { ArrowUpRight, ChevronDown, Sparkles, Calendar, MapPin } from 'lucide-react';
+import { ArrowUpRight, Sparkles, Calendar, MapPin, Compass } from 'lucide-react';
+import { CountdownTimer } from './CountdownTimer.tsx';
 
 interface HeroProps {
   onOpenRegister: () => void;
   onExploreAlumni: () => void;
+  onNavigateTab?: (tabId: string) => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenRegister, onExploreAlumni }) => {
+export const Hero: React.FC<HeroProps> = ({ onOpenRegister, onExploreAlumni, onNavigateTab }) => {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center items-center px-6 sm:px-8 pt-28 pb-16 overflow-hidden">
+    <section className="relative min-h-[92vh] flex flex-col justify-center items-center px-4 sm:px-8 pt-24 pb-12 overflow-hidden">
       {/* Background Cinematic Visual with Scrim & Golden Trail */}
       <div className="absolute inset-0 z-0">
         <img
@@ -64,42 +66,45 @@ export const Hero: React.FC<HeroProps> = ({ onOpenRegister, onExploreAlumni }) =
       {/* Main Content */}
       <div className="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center my-auto">
         {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2 mb-6 text-xs sm:text-sm font-medium tracking-[0.25em] text-[#E8D9A8]/90 uppercase">
+        <div className="inline-flex items-center gap-2 mb-4 text-xs sm:text-sm font-medium tracking-[0.25em] text-[#E8D9A8]/90 uppercase">
           <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
           <span>{EVENT_CONFIG.brand.eyebrow}</span>
           <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
         </div>
 
         {/* Main Headline */}
-        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif-editorial font-bold tracking-tight text-[#FAFAFA] leading-[0.92] mb-6">
+        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-serif-editorial font-bold tracking-tight text-[#FAFAFA] leading-[0.92] mb-4">
           <span className="block">SHALOM</span>
           <span className="block gold-gradient-text tracking-[0.04em]">FOOTPRINTS</span>
         </h1>
 
         {/* Supporting Headline */}
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-serif-editorial italic text-[#E8D9A8] max-w-2xl mx-auto mb-5 leading-snug">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-serif-editorial italic text-[#E8D9A8] max-w-2xl mx-auto mb-4 leading-snug">
           “{EVENT_CONFIG.brand.tagline}”
         </h2>
 
         {/* Description */}
-        <p className="text-sm sm:text-base md:text-lg text-[#A1A1AA] max-w-2xl mx-auto mb-8 font-normal leading-relaxed">
+        <p className="text-xs sm:text-sm md:text-base text-[#A1A1AA] max-w-2xl mx-auto mb-6 font-normal leading-relaxed">
           {EVENT_CONFIG.brand.heroDescription}
         </p>
 
         {/* Event Quick Info Badge Strip */}
-        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-[#E8D9A8] mb-10 pb-2">
-          <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
-            <Calendar className="w-4 h-4 text-[#C9A227]" />
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-xs text-[#E8D9A8] mb-4">
+          <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full backdrop-blur-sm">
+            <Calendar className="w-3.5 h-3.5 text-[#C9A227]" />
             <span className="font-semibold tracking-wider uppercase text-[#FAFAFA]">14 NOVEMBER 2026</span>
           </div>
-          <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
-            <MapPin className="w-4 h-4 text-[#C9A227]" />
+          <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full backdrop-blur-sm">
+            <MapPin className="w-3.5 h-3.5 text-[#C9A227]" />
             <span className="text-[#FAFAFA]">{EVENT_CONFIG.brand.host}</span>
           </div>
         </div>
 
+        {/* FRONT PAGE COUNTDOWN TIMER */}
+        <CountdownTimer />
+
         {/* Call to Actions */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto mt-2">
           <button
             onClick={onOpenRegister}
             className="w-full sm:w-auto px-8 py-3.5 text-xs sm:text-sm font-poppins font-medium uppercase tracking-wider text-[#080808] bg-gradient-to-r from-[#E8D9A8] via-[#C9A227] to-[#B38F1F] rounded-md shadow-[0_0_30px_rgba(201,162,39,0.35)] hover:shadow-[0_0_40px_rgba(201,162,39,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
@@ -114,17 +119,18 @@ export const Hero: React.FC<HeroProps> = ({ onOpenRegister, onExploreAlumni }) =
           >
             <span>MEET THE ALUMNI</span>
           </button>
+
+          {onNavigateTab && (
+            <button
+              onClick={() => onNavigateTab('mentorship')}
+              className="w-full sm:w-auto px-6 py-3.5 text-xs sm:text-sm font-poppins font-medium uppercase tracking-wider text-[#E8D9A8] bg-[#C9A227]/10 hover:bg-[#C9A227]/20 border border-[#C9A227]/30 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <Compass className="w-3.5 h-3.5 text-[#C9A227]" />
+              <span>EXPLORE TRACKS</span>
+            </button>
+          )}
         </div>
       </div>
-
-      {/* Subtle Scroll Indicator */}
-      <a
-        href="#story"
-        className="relative z-10 mt-12 flex flex-col items-center gap-1.5 text-[11px] font-medium tracking-[0.2em] text-[#71717A] hover:text-[#C9A227] transition-colors cursor-pointer group"
-      >
-        <span>EXPLORE JOURNEY</span>
-        <ChevronDown className="w-4 h-4 text-[#C9A227] animate-bounce group-hover:translate-y-1 transition-transform" />
-      </a>
     </section>
   );
 };
