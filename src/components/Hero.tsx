@@ -13,7 +13,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenRegister, onExploreAlumni }) =
       {/* Background Cinematic Visual with Scrim & Golden Trail */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/src/assets/images/hero_footprints_trail_1793295219663.jpg"
+          src="/images/hero_footprints_trail_1793295219663.jpg"
           alt="Golden path leading to horizon at dusk"
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover object-center scale-105 transition-transform duration-1000 ease-out opacity-45"

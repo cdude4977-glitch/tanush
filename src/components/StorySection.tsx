@@ -52,7 +52,7 @@ export const StorySection: React.FC = () => {
           <div className="lg:col-span-5 relative">
             <div className="relative rounded-lg overflow-hidden border border-white/10 shadow-2xl shadow-black/80 group">
               <img
-                src="/src/assets/images/story_corridor_path_1793295220463.jpg"
+                src="/images/story_corridor_path_1793295220463.jpg"
                 alt="Architectural corridor of Shalom Hills International School at dusk"
                 referrerPolicy="no-referrer"
                 className="w-full h-[440px] sm:h-[500px] object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
