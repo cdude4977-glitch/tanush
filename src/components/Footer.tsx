@@ -1,12 +1,12 @@
 import React from 'react';
 import { EVENT_CONFIG } from '../config/eventConfig.ts';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Users } from 'lucide-react';
 
 interface FooterProps {
-  onOpenRegister: () => void;
+  onExploreAlumni: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenRegister }) => {
+export const Footer: React.FC<FooterProps> = ({ onExploreAlumni }) => {
   return (
     <footer className="relative bg-[#050505] text-[#FAFAFA] pt-16 pb-12 px-6 sm:px-8 border-t border-white/5">
       {/* Thin Antique Gold Divider */}
@@ -38,16 +38,19 @@ export const Footer: React.FC<FooterProps> = ({ onOpenRegister }) => {
             </div>
             <ul className="space-y-2 text-xs text-[#A1A1AA]">
               <li>
-                <a href="#story" className="hover:text-[#FAFAFA] transition-colors">Our Story</a>
+                <a href="#overview" className="hover:text-[#FAFAFA] transition-colors">Event Overview</a>
               </li>
               <li>
-                <a href="#alumni" className="hover:text-[#FAFAFA] transition-colors">Alumni Mentors</a>
+                <a href="#alumni" className="hover:text-[#FAFAFA] transition-colors">Alumni Directory</a>
               </li>
               <li>
                 <a href="#mentorship" className="hover:text-[#FAFAFA] transition-colors">Guidance Framework</a>
               </li>
               <li>
-                <a href="#details" className="hover:text-[#FAFAFA] transition-colors">Event Details &amp; Venue</a>
+                <a href="#awards" className="hover:text-[#FAFAFA] transition-colors">Honors &amp; Recognition</a>
+              </li>
+              <li>
+                <a href="#logistics" className="hover:text-[#FAFAFA] transition-colors">Details &amp; Gallery</a>
               </li>
               <li>
                 <a href="#faqs" className="hover:text-[#FAFAFA] transition-colors">Frequently Asked Questions</a>
@@ -58,13 +61,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenRegister }) => {
           {/* Quick Actions (3 cols) */}
           <div className="md:col-span-3 space-y-4">
             <div className="text-xs uppercase tracking-widest text-[#71717A] font-semibold">
-              Participation
+              Directory &amp; School
             </div>
             <button
-              onClick={onOpenRegister}
-              className="w-full py-2.5 text-xs font-poppins font-medium uppercase tracking-wider text-[#080808] bg-[#C9A227] hover:bg-[#E8D9A8] rounded transition-all cursor-pointer flex items-center justify-center gap-2"
+              onClick={onExploreAlumni}
+              className="w-full py-2.5 text-xs font-poppins font-medium uppercase tracking-wider text-[#080808] bg-[#C9A227] hover:bg-[#E8D9A8] rounded transition-all cursor-pointer flex items-center justify-center gap-2 shadow-lg"
             >
-              <span>REGISTER NOW</span>
+              <Users className="w-3.5 h-3.5" />
+              <span>EXPLORE ALUMNI</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </button>
             <a

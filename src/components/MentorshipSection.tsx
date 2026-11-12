@@ -1,12 +1,12 @@
 import React from 'react';
 import { EVENT_CONFIG } from '../config/eventConfig.ts';
-import { Compass, Check, ArrowRight } from 'lucide-react';
+import { Compass, Check, ArrowRight, Users } from 'lucide-react';
 
 interface MentorshipSectionProps {
-  onOpenRegister: () => void;
+  onExploreAlumni: () => void;
 }
 
-export const MentorshipSection: React.FC<MentorshipSectionProps> = ({ onOpenRegister }) => {
+export const MentorshipSection: React.FC<MentorshipSectionProps> = ({ onExploreAlumni }) => {
   return (
     <section id="mentorship" className="relative py-24 sm:py-32 px-6 sm:px-8 bg-[#0D0D0E] border-t border-white/5">
       <div className="max-w-7xl mx-auto">
@@ -24,7 +24,7 @@ export const MentorshipSection: React.FC<MentorshipSectionProps> = ({ onOpenRegi
           </p>
         </div>
 
-        {/* 3 Elegant Feature Cards */}
+        {/* 3 Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {EVENT_CONFIG.mentorshipPillars.map((pillar) => (
             <div
@@ -74,14 +74,15 @@ export const MentorshipSection: React.FC<MentorshipSectionProps> = ({ onOpenRegi
               Have a specific question for an upcoming sector panel?
             </h4>
             <p className="text-xs text-[#A1A1AA] mt-1">
-              Submit your questions during registration to have them prioritized during the live alumni breakout sessions.
+              Connect directly with registered mentors in the Alumni Directory or queue inquiries for the live breakout pods.
             </p>
           </div>
           <button
-            onClick={onOpenRegister}
+            onClick={onExploreAlumni}
             className="px-6 py-2.5 text-xs font-poppins font-medium uppercase tracking-wider text-[#080808] bg-[#C9A227] hover:bg-[#E8D9A8] rounded transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 shrink-0"
           >
-            <span>JOIN THE DIALOGUE</span>
+            <Users className="w-3.5 h-3.5" />
+            <span>EXPLORE ALUMNI DIRECTORY</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

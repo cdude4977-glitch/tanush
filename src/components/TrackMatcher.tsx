@@ -172,10 +172,10 @@ export const TrackMatcher: React.FC<TrackMatcherProps> = ({ onNavigateTab }) => 
 
           <div className="pt-2">
             <button
-              onClick={() => onNavigateTab('registration')}
+              onClick={() => onNavigateTab('alumni')}
               className="w-full py-2.5 text-xs font-poppins font-medium uppercase tracking-wider text-[#080808] bg-[#C9A227] hover:bg-[#E8D9A8] rounded transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>Reserve Seat in this Track</span>
+              <span>Explore Mentors in this Track</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

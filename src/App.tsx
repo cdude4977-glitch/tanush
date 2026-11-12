@@ -15,24 +15,21 @@ import { RecognitionSection } from './components/RecognitionSection.tsx';
 import { JourneyTimelineSection } from './components/JourneyTimelineSection.tsx';
 import { EventDetailsSection } from './components/EventDetailsSection.tsx';
 import { GallerySection } from './components/GallerySection.tsx';
-import { RegistrationSection } from './components/RegistrationSection.tsx';
 import { FaqSection } from './components/FaqSection.tsx';
 import { ContactSection } from './components/ContactSection.tsx';
 import { Footer } from './components/Footer.tsx';
-import { RegistrationModal } from './components/RegistrationModal.tsx';
 import { AlumniDetailModal } from './components/AlumniDetailModal.tsx';
 import { AlumniProfile } from './config/eventConfig.ts';
-import { Compass, Users, Award, Calendar, FileText, HelpCircle, ArrowRight } from 'lucide-react';
+import { Compass, Users, Award, Calendar, HelpCircle } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>(() => {
     // Read initial tab from URL hash if available
     const hash = window.location.hash.replace('#', '') as TabId;
-    const validTabs: TabId[] = ['overview', 'alumni', 'mentorship', 'awards', 'logistics', 'registration', 'faqs'];
+    const validTabs: TabId[] = ['overview', 'alumni', 'mentorship', 'awards', 'logistics', 'faqs'];
     return validTabs.includes(hash) ? hash : 'overview';
   });
 
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [selectedAlumni, setSelectedAlumni] = useState<AlumniProfile | null>(null);
   const [isQuestionMode, setIsQuestionMode] = useState(false);
 
@@ -46,7 +43,7 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '') as TabId;
-      const validTabs: TabId[] = ['overview', 'alumni', 'mentorship', 'awards', 'logistics', 'registration', 'faqs'];
+      const validTabs: TabId[] = ['overview', 'alumni', 'mentorship', 'awards', 'logistics', 'faqs'];
       if (validTabs.includes(hash)) {
         setActiveTab(hash);
       }
@@ -55,10 +52,6 @@ export default function App() {
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
-
-  const handleOpenRegister = () => {
-    handleSelectTab('registration');
-  };
 
   const handleExploreAlumni = () => {
     handleSelectTab('alumni');
@@ -85,7 +78,6 @@ export default function App() {
       <Navbar
         activeTab={activeTab}
         onSelectTab={handleSelectTab}
-        onOpenRegisterModal={() => setIsRegisterModalOpen(true)}
       />
 
       {/* Main Tab Views Container */}
@@ -94,7 +86,6 @@ export default function App() {
         {activeTab === 'overview' && (
           <div className="animate-in fade-in duration-300">
             <Hero
-              onOpenRegister={handleOpenRegister}
               onExploreAlumni={handleExploreAlumni}
               onNavigateTab={(tab) => handleSelectTab(tab as TabId)}
             />
@@ -124,7 +115,7 @@ export default function App() {
                       Alumni Directory
                     </div>
                     <div className="text-[11px] text-[#A1A1AA] mt-1">
-                      Browse mentors across Tech, Medicine, Law, Finance &amp; Design.
+                      Browse 125 registered alumni across graduating batches (2013–2028).
                     </div>
                   </button>
 
@@ -144,6 +135,21 @@ export default function App() {
                   </button>
 
                   <button
+                    onClick={() => handleSelectTab('awards')}
+                    className="p-5 rounded-lg bg-[#141417] border border-white/10 hover:border-[#C9A227]/40 text-left transition-all group cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-full bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] mb-3 group-hover:scale-110 transition-transform">
+                      <Award className="w-4 h-4" />
+                    </div>
+                    <div className="text-sm font-serif-editorial font-bold text-[#FAFAFA] group-hover:text-[#E8D9A8]">
+                      Recognition &amp; Honors
+                    </div>
+                    <div className="text-[11px] text-[#A1A1AA] mt-1">
+                      Excellence citations, mentorship honors &amp; student distinctions.
+                    </div>
+                  </button>
+
+                  <button
                     onClick={() => handleSelectTab('logistics')}
                     className="p-5 rounded-lg bg-[#141417] border border-white/10 hover:border-[#C9A227]/40 text-left transition-all group cursor-pointer"
                   >
@@ -155,21 +161,6 @@ export default function App() {
                     </div>
                     <div className="text-[11px] text-[#A1A1AA] mt-1">
                       14 Nov 2026 venue schedule, campus directions &amp; lightbox.
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => handleSelectTab('registration')}
-                    className="p-5 rounded-lg bg-[#141417] border border-[#C9A227]/30 hover:border-[#C9A227] text-left transition-all group cursor-pointer"
-                  >
-                    <div className="w-9 h-9 rounded-full bg-[#C9A227]/20 flex items-center justify-center text-[#C9A227] mb-3 group-hover:scale-110 transition-transform">
-                      <FileText className="w-4 h-4" />
-                    </div>
-                    <div className="text-sm font-serif-editorial font-bold text-[#FAFAFA] group-hover:text-[#E8D9A8]">
-                      Register &amp; Forms
-                    </div>
-                    <div className="text-[11px] text-[#A1A1AA] mt-1">
-                      Official Google Forms integration &amp; express RSVP form.
                     </div>
                   </button>
                 </div>
@@ -195,7 +186,7 @@ export default function App() {
               {/* Interactive Career Cluster & Question Matcher */}
               <TrackMatcher onNavigateTab={(tab) => handleSelectTab(tab as TabId)} />
             </div>
-            <MentorshipSection onOpenRegister={handleOpenRegister} />
+            <MentorshipSection onExploreAlumni={handleExploreAlumni} />
             <JourneyTimelineSection />
             <EventHighlightsSection />
           </div>
@@ -216,14 +207,7 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 6: REGISTRATION & GOOGLE FORMS */}
-        {activeTab === 'registration' && (
-          <div className="animate-in fade-in duration-300 pt-6">
-            <RegistrationSection />
-          </div>
-        )}
-
-        {/* TAB 7: FAQS & CONTACT */}
+        {/* TAB 6: FAQS & CONTACT */}
         {activeTab === 'faqs' && (
           <div className="animate-in fade-in duration-300 pt-6">
             <FaqSection />
@@ -233,14 +217,9 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <Footer onOpenRegister={handleOpenRegister} />
+      <Footer onExploreAlumni={handleExploreAlumni} />
 
-      {/* Interactive Modals */}
-      <RegistrationModal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-      />
-
+      {/* Interactive Modal for Alumni Attendee Card */}
       <AlumniDetailModal
         alumni={selectedAlumni}
         onClose={handleCloseAlumniModal}

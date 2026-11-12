@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { EVENT_CONFIG } from '../config/eventConfig.ts';
-import { Menu, X, ArrowUpRight, Sparkles } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Users } from 'lucide-react';
 
-export type TabId = 'overview' | 'alumni' | 'mentorship' | 'awards' | 'logistics' | 'registration' | 'faqs';
+export type TabId = 'overview' | 'alumni' | 'mentorship' | 'awards' | 'logistics' | 'faqs';
 
 interface NavbarProps {
   activeTab: TabId;
   onSelectTab: (tabId: TabId) => void;
-  onOpenRegisterModal: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   onSelectTab,
-  onOpenRegisterModal,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -32,7 +30,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'mentorship', label: 'Mentorship & Tracks', shortLabel: 'Tracks' },
     { id: 'awards', label: 'Recognition', shortLabel: 'Awards' },
     { id: 'logistics', label: 'Details & Gallery', shortLabel: 'Details' },
-    { id: 'registration', label: 'Register & Forms', shortLabel: 'Register' },
     { id: 'faqs', label: 'FAQs & Help', shortLabel: 'FAQs' },
   ];
 
@@ -76,14 +73,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               })}
             </nav>
 
-            {/* Zone 3: 1 primary action */}
+            {/* Zone 3: Primary action - Explore Alumni */}
             <div className="flex items-center gap-3 shrink-0">
               <button
-                onClick={() => onSelectTab('registration')}
+                onClick={() => onSelectTab('alumni')}
                 className="hidden sm:flex px-4 py-2 text-xs font-poppins font-medium uppercase tracking-wider text-[#080808] bg-gradient-to-r from-[#E8D9A8] via-[#C9A227] to-[#B38F1F] rounded hover:shadow-[0_0_20px_rgba(201,162,39,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap shrink-0 items-center gap-1.5 cursor-pointer"
               >
-                <span>REGISTER NOW</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
+                <Users className="w-3.5 h-3.5" />
+                <span>ALUMNI DIRECTORY</span>
               </button>
 
               {/* Mobile Hamburger toggle */}
@@ -98,7 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Secondary Sub-Tabs Strip on Tablets / Smaller Desktop Screens */}
+        {/* Secondary Sub-Tabs Strip on Mobile / Smaller Desktop Screens */}
         <div className="lg:hidden flex items-center gap-1 px-4 pt-2 pb-1 overflow-x-auto no-scrollbar border-t border-white/5 mt-2">
           {navTabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -154,12 +151,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onSelectTab('registration');
+                onSelectTab('alumni');
               }}
               className="w-full py-3.5 text-center text-xs font-poppins font-medium uppercase tracking-wider text-[#080808] bg-gradient-to-r from-[#E8D9A8] via-[#C9A227] to-[#B38F1F] rounded shadow-[0_0_20px_rgba(201,162,39,0.3)] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>REGISTER FOR FOOTPRINTS</span>
-              <ArrowUpRight className="w-4 h-4" />
+              <Users className="w-4 h-4" />
+              <span>EXPLORE ALUMNI DIRECTORY</span>
             </button>
             <div className="text-center text-xs text-[#71717A]">
               14 November 2026 · Shalom Hills International School

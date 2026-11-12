@@ -1,15 +1,14 @@
 import React from 'react';
 import { EVENT_CONFIG } from '../config/eventConfig.ts';
-import { ArrowUpRight, Sparkles, Calendar, MapPin, Compass } from 'lucide-react';
+import { ArrowUpRight, Sparkles, Calendar, MapPin, Compass, Info } from 'lucide-react';
 import { CountdownTimer } from './CountdownTimer.tsx';
 
 interface HeroProps {
-  onOpenRegister: () => void;
   onExploreAlumni: () => void;
   onNavigateTab?: (tabId: string) => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenRegister, onExploreAlumni, onNavigateTab }) => {
+export const Hero: React.FC<HeroProps> = ({ onExploreAlumni, onNavigateTab }) => {
   return (
     <section className="relative min-h-[92vh] flex flex-col justify-center items-center px-4 sm:px-8 pt-24 pb-12 overflow-hidden">
       {/* Background Cinematic Visual with Scrim & Golden Trail */}
@@ -106,28 +105,31 @@ export const Hero: React.FC<HeroProps> = ({ onOpenRegister, onExploreAlumni, onN
         {/* Call to Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto mt-2">
           <button
-            onClick={onOpenRegister}
+            onClick={onExploreAlumni}
             className="w-full sm:w-auto px-8 py-3.5 text-xs sm:text-sm font-poppins font-medium uppercase tracking-wider text-[#080808] bg-gradient-to-r from-[#E8D9A8] via-[#C9A227] to-[#B38F1F] rounded-md shadow-[0_0_30px_rgba(201,162,39,0.35)] hover:shadow-[0_0_40px_rgba(201,162,39,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
           >
-            <span>REGISTER NOW</span>
+            <span>EXPLORE ALUMNI DIRECTORY</span>
             <ArrowUpRight className="w-4 h-4" />
           </button>
 
-          <button
-            onClick={onExploreAlumni}
-            className="w-full sm:w-auto px-8 py-3.5 text-xs sm:text-sm font-poppins font-medium uppercase tracking-wider text-[#FAFAFA] bg-white/5 hover:bg-white/10 border border-white/15 rounded-md hover:border-[#C9A227]/50 transition-all cursor-pointer flex items-center justify-center gap-2"
-          >
-            <span>MEET THE ALUMNI</span>
-          </button>
-
           {onNavigateTab && (
-            <button
-              onClick={() => onNavigateTab('mentorship')}
-              className="w-full sm:w-auto px-6 py-3.5 text-xs sm:text-sm font-poppins font-medium uppercase tracking-wider text-[#E8D9A8] bg-[#C9A227]/10 hover:bg-[#C9A227]/20 border border-[#C9A227]/30 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <Compass className="w-3.5 h-3.5 text-[#C9A227]" />
-              <span>EXPLORE TRACKS</span>
-            </button>
+            <>
+              <button
+                onClick={() => onNavigateTab('mentorship')}
+                className="w-full sm:w-auto px-6 py-3.5 text-xs sm:text-sm font-poppins font-medium uppercase tracking-wider text-[#E8D9A8] bg-[#C9A227]/10 hover:bg-[#C9A227]/20 border border-[#C9A227]/30 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Compass className="w-3.5 h-3.5 text-[#C9A227]" />
+                <span>EXPLORE TRACKS</span>
+              </button>
+
+              <button
+                onClick={() => onNavigateTab('logistics')}
+                className="w-full sm:w-auto px-6 py-3.5 text-xs sm:text-sm font-poppins font-medium uppercase tracking-wider text-[#FAFAFA] bg-white/5 hover:bg-white/10 border border-white/15 rounded-md hover:border-[#C9A227]/50 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Info className="w-3.5 h-3.5 text-[#C9A227]" />
+                <span>EVENT DETAILS</span>
+              </button>
+            </>
           )}
         </div>
       </div>
