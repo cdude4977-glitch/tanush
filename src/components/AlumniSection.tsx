@@ -1,6 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { EVENT_CONFIG, AlumniProfile } from '../config/eventConfig.ts';
-import { Users, Search, GraduationCap, Briefcase, ArrowUpRight, MessageSquare, Info } from 'lucide-react';
+import {
+  Users,
+  Search,
+  CheckCircle2,
+  Mail,
+  Phone,
+  Calendar,
+  Sparkles,
+  ArrowUpRight,
+  MessageSquare,
+  ArrowUpDown,
+  Copy,
+  Check,
+  GraduationCap,
+  Filter
+} from 'lucide-react';
 
 interface AlumniSectionProps {
   onSelectAlumni: (alumni: AlumniProfile) => void;
@@ -8,171 +23,369 @@ interface AlumniSectionProps {
 }
 
 export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, onOpenQuestionModal }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedBatch, setSelectedBatch] = useState<string>('all');
+  const [sortOrder, setSortOrder] = useState<'default' | 'alphabetical' | 'recent' | 'batch-asc' | 'batch-desc'>('default');
+  const [visibleCount, setVisibleCount] = useState<number>(24);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const filteredAlumni = EVENT_CONFIG.alumniProfiles.filter((profile) => {
-    const matchesCategory =
-      selectedCategory === 'All' || profile.category.toLowerCase() === selectedCategory.toLowerCase();
-    const matchesSearch =
-      profile.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      profile.profession.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      profile.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      profile.mentorshipTopics.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCategory && matchesSearch;
-  });
+  const handleCopyContact = (text: string, id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const uniqueBatches = useMemo(() => {
+    const batches = Array.from(new Set(EVENT_CONFIG.alumniProfiles.map((p) => p.batchYear)));
+    return batches.sort();
+  }, []);
+
+  const filteredAlumni = useMemo(() => {
+    let list = [...EVENT_CONFIG.alumniProfiles];
+
+    // Batch filter
+    if (selectedBatch !== 'all') {
+      list = list.filter((profile) => profile.batchYear === selectedBatch);
+    }
+
+    // Text search
+    const q = searchQuery.toLowerCase().trim();
+    if (q) {
+      list = list.filter(
+        (profile) =>
+          profile.name.toLowerCase().includes(q) ||
+          profile.email.toLowerCase().includes(q) ||
+          profile.contactNumber.toLowerCase().includes(q) ||
+          profile.batchYear.toLowerCase().includes(q)
+      );
+    }
+
+    // Sorting
+    if (sortOrder === 'alphabetical') {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortOrder === 'recent') {
+      list.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    } else if (sortOrder === 'batch-asc') {
+      list.sort((a, b) => a.batchYear.localeCompare(b.batchYear));
+    } else if (sortOrder === 'batch-desc') {
+      list.sort((a, b) => b.batchYear.localeCompare(a.batchYear));
+    }
+
+    return list;
+  }, [searchQuery, selectedBatch, sortOrder]);
+
+  const displayedAlumni = filteredAlumni.slice(0, visibleCount);
 
   return (
-    <section id="alumni" className="relative py-24 sm:py-32 px-6 sm:px-8 bg-[#080808] border-t border-white/5">
+    <section id="alumni" className="relative py-16 sm:py-24 px-4 sm:px-8 bg-[#080808]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-3 text-xs font-semibold tracking-[0.2em] text-[#C9A227] uppercase">
               <Users className="w-3.5 h-3.5" />
-              <span>THE PEOPLE WHO LIGHT THE WAY</span>
+              <span>OFFICIAL ATTENDEE DIRECTORY</span>
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif-editorial font-bold text-[#FAFAFA]">
-              Alumni Mentors &amp; Trailblazers
+              Registered Alumni Directory
             </h2>
-            <p className="text-sm sm:text-base text-[#A1A1AA] mt-3 max-w-2xl">
-              Accomplished graduates returning to Shalom Hills to share insights, lessons, and industry realities.
+            <p className="text-xs sm:text-sm text-[#A1A1AA] mt-2 max-w-2xl font-light">
+              Official registrations submitted by Shalom Hills International School alumni for the Shalom Footprints gathering on 14 November 2026, categorized by graduation batches.
             </p>
           </div>
 
-          {/* Search Input */}
-          <div className="relative w-full md:w-72">
-            <Search className="w-4 h-4 text-[#71717A] absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search by field, topic..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-xs text-[#FAFAFA] placeholder-[#71717A] focus:outline-none focus:border-[#C9A227] transition-colors"
-            />
+          {/* Search, Batch Filter & Sort Controls */}
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full lg:w-auto">
+            {/* Search Input */}
+            <div className="relative w-full sm:w-64">
+              <Search className="w-4 h-4 text-[#71717A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search name, batch, email..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setVisibleCount(24);
+                }}
+                className="w-full bg-[#141416] border border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-xs text-[#FAFAFA] placeholder-[#71717A] focus:outline-none focus:border-[#C9A227] transition-colors"
+              />
+            </div>
+
+            {/* Batch Filter Dropdown */}
+            <div className="relative flex items-center bg-[#141416] border border-white/10 rounded-lg px-3 py-1.5 shrink-0">
+              <GraduationCap className="w-3.5 h-3.5 text-[#C9A227] mr-2 shrink-0" />
+              <select
+                value={selectedBatch}
+                onChange={(e) => {
+                  setSelectedBatch(e.target.value);
+                  setVisibleCount(24);
+                }}
+                className="bg-transparent text-xs text-[#FAFAFA] focus:outline-none cursor-pointer pr-2"
+                aria-label="Filter by Graduation Batch"
+              >
+                <option value="all" className="bg-[#141416] text-[#FAFAFA]">All Batches ({EVENT_CONFIG.alumniProfiles.length})</option>
+                {uniqueBatches.map((batch) => {
+                  const count = EVENT_CONFIG.alumniProfiles.filter((p) => p.batchYear === batch).length;
+                  return (
+                    <option key={batch} value={batch} className="bg-[#141416] text-[#FAFAFA]">
+                      Batch {batch} ({count})
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
+            {/* Sort Order Selector */}
+            <div className="flex items-center gap-1 bg-[#141416] border border-white/10 rounded-lg p-1 shrink-0 overflow-x-auto">
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#C9A227] ml-2 mr-1 shrink-0" />
+              <button
+                onClick={() => setSortOrder('default')}
+                className={`px-2.5 py-1.5 text-xs rounded transition-all cursor-pointer whitespace-nowrap ${
+                  sortOrder === 'default'
+                    ? 'bg-[#C9A227] text-[#080808] font-semibold'
+                    : 'text-[#A1A1AA] hover:text-[#FAFAFA]'
+                }`}
+              >
+                Sheet Order
+              </button>
+              <button
+                onClick={() => setSortOrder('alphabetical')}
+                className={`px-2.5 py-1.5 text-xs rounded transition-all cursor-pointer whitespace-nowrap ${
+                  sortOrder === 'alphabetical'
+                    ? 'bg-[#C9A227] text-[#080808] font-semibold'
+                    : 'text-[#A1A1AA] hover:text-[#FAFAFA]'
+                }`}
+              >
+                A → Z
+              </button>
+              <button
+                onClick={() => setSortOrder('batch-asc')}
+                className={`px-2.5 py-1.5 text-xs rounded transition-all cursor-pointer whitespace-nowrap ${
+                  sortOrder === 'batch-asc'
+                    ? 'bg-[#C9A227] text-[#080808] font-semibold'
+                    : 'text-[#A1A1AA] hover:text-[#FAFAFA]'
+                }`}
+                title="Sort from earliest graduation batch"
+              >
+                Senior Batches
+              </button>
+              <button
+                onClick={() => setSortOrder('batch-desc')}
+                className={`px-2.5 py-1.5 text-xs rounded transition-all cursor-pointer whitespace-nowrap ${
+                  sortOrder === 'batch-desc'
+                    ? 'bg-[#C9A227] text-[#080808] font-semibold'
+                    : 'text-[#A1A1AA] hover:text-[#FAFAFA]'
+                }`}
+                title="Sort from most recent graduation batch"
+              >
+                Recent Batches
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Clear Notice Banner regarding Placeholder Profiles as per Prompt Directive */}
-        <div className="flex items-start gap-3 p-4 mb-8 rounded-lg bg-[#111111] border border-white/10 text-xs text-[#A1A1AA]">
-          <Info className="w-4 h-4 text-[#C9A227] shrink-0 mt-0.5" />
-          <div>
-            <span className="font-semibold text-[#FAFAFA]">Official Secretariat Notice:</span> The profiles below represent illustrative mentorship cohorts and career tracks. Confirmed alumni speakers, biographies, and designated panel schedules will be posted here as finalized by the school organizing committee.
+        {/* Batch Pills Quick Filter */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-6 scrollbar-thin">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-[#71717A] flex items-center gap-1 mr-1 shrink-0">
+            <Filter className="w-3 h-3 text-[#C9A227]" />
+            <span>Batches:</span>
+          </span>
+          <button
+            onClick={() => {
+              setSelectedBatch('all');
+              setVisibleCount(24);
+            }}
+            className={`px-2.5 py-1 rounded text-[11px] font-mono transition-all cursor-pointer shrink-0 ${
+              selectedBatch === 'all'
+                ? 'bg-[#C9A227] text-[#080808] font-bold'
+                : 'bg-white/5 text-[#A1A1AA] hover:text-[#FAFAFA] border border-white/5'
+            }`}
+          >
+            All ({EVENT_CONFIG.alumniProfiles.length})
+          </button>
+          {uniqueBatches.map((batch) => {
+            const count = EVENT_CONFIG.alumniProfiles.filter((p) => p.batchYear === batch).length;
+            const isSelected = selectedBatch === batch;
+            return (
+              <button
+                key={batch}
+                onClick={() => {
+                  setSelectedBatch(batch);
+                  setVisibleCount(24);
+                }}
+                className={`px-2.5 py-1 rounded text-[11px] font-mono transition-all cursor-pointer shrink-0 flex items-center gap-1 ${
+                  isSelected
+                    ? 'bg-[#C9A227] text-[#080808] font-bold shadow-md shadow-[#C9A227]/20'
+                    : 'bg-white/5 text-[#A1A1AA] hover:text-[#FAFAFA] border border-white/5 hover:border-[#C9A227]/30'
+                }`}
+              >
+                <span>{batch}</span>
+                <span className={`text-[10px] ${isSelected ? 'text-[#080808]/70' : 'text-[#71717A]'}`}>
+                  ({count})
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Official Registry Status Banner */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 mb-8 rounded-lg bg-gradient-to-r from-[#18160E] to-[#111114] border border-[#C9A227]/30 text-xs">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-[#C9A227]/20 border border-[#C9A227]/40 flex items-center justify-center text-[#E8D9A8] shrink-0">
+              <CheckCircle2 className="w-4 h-4 text-[#C9A227]" />
+            </div>
+            <div>
+              <span className="font-semibold text-[#FAFAFA] block sm:inline">
+                Synchronized Form Registry:
+              </span>{' '}
+              <span className="text-[#A1A1AA]">
+                Displaying {filteredAlumni.length} verified alumni across graduating batches (2013 through 2028).
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0 font-mono text-[11px] text-[#E8D9A8]">
+            <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
+            <span>125 Verified Registrations</span>
           </div>
         </div>
 
-        {/* Category Filter Bar (Buttons with functional click handlers) */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-10 no-scrollbar">
-          {EVENT_CONFIG.categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 text-xs font-medium rounded-full transition-all whitespace-nowrap cursor-pointer shrink-0 ${
-                selectedCategory === category
-                  ? 'bg-[#C9A227] text-[#080808] font-semibold shadow-[0_0_15px_rgba(201,162,39,0.35)]'
-                  : 'bg-white/5 text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-white/10 border border-white/5'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        {/* Alumni Profiles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredAlumni.map((alumni) => (
-            <div
-              key={alumni.id}
-              className="group relative flex flex-col justify-between p-6 rounded-lg bg-[#111111]/80 border border-white/10 hover:border-[#C9A227]/40 hover:bg-[#141414] transition-all duration-300 shadow-lg shadow-black/40 hover:-translate-y-1"
-            >
-              <div>
-                {/* Top Row: Graduation Year & Category (Zero-pill clean metadata) */}
-                <div className="flex items-center justify-between text-xs text-[#71717A] mb-4">
-                  <span className="flex items-center gap-1.5 text-[#E8D9A8]/90 font-medium">
-                    <GraduationCap className="w-3.5 h-3.5 text-[#C9A227]" />
-                    {alumni.graduationYear}
-                  </span>
-                  <span>{alumni.category}</span>
-                </div>
-
-                {/* Avatar / Monogram Header */}
-                <div className="flex items-center gap-3.5 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#1C1C20] to-[#0A0A0A] border border-[#C9A227]/30 flex items-center justify-center text-[#E8D9A8] font-serif-editorial text-lg font-bold group-hover:border-[#C9A227] transition-colors shrink-0">
-                    {alumni.name.charAt(0)}
+        {/* Alumni Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {displayedAlumni.map((alumni) => {
+            const initial = alumni.name.trim().charAt(0).toUpperCase() || 'A';
+            return (
+              <div
+                key={alumni.id}
+                className="group relative flex flex-col justify-between p-5 rounded-lg bg-[#111114] border border-white/10 hover:border-[#C9A227]/40 hover:bg-[#141418] transition-all duration-300 shadow-lg shadow-black/40 hover:-translate-y-1"
+              >
+                <div>
+                  {/* Top Status & Batch Badge Row */}
+                  <div className="flex items-center justify-between text-xs text-[#71717A] mb-3 pb-2.5 border-b border-white/5">
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#C9A227]/15 text-[#E8D9A8] border border-[#C9A227]/30 text-[11px] font-mono font-semibold">
+                      <GraduationCap className="w-3.5 h-3.5 text-[#C9A227]" />
+                      <span>Batch {alumni.batchYear}</span>
+                    </span>
+                    <span className="text-[10px] text-emerald-400 font-medium flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                      <CheckCircle2 className="w-3 h-3" />
+                      <span>Verified</span>
+                    </span>
                   </div>
-                  <div>
-                    <h3 className="text-base font-semibold text-[#FAFAFA] group-hover:text-[#E8D9A8] transition-colors leading-snug">
-                      {alumni.name}
-                    </h3>
-                    <div className="flex items-center gap-1 text-xs text-[#A1A1AA] mt-0.5">
-                      <Briefcase className="w-3 h-3 text-[#71717A]" />
-                      <span className="truncate max-w-[170px]">{alumni.profession}</span>
+
+                  {/* Monogram Avatar & Name */}
+                  <div className="flex items-center gap-3.5 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#222019] to-[#0A0A0C] border border-[#C9A227]/40 flex items-center justify-center text-[#E8D9A8] font-serif-editorial text-xl font-bold group-hover:border-[#C9A227] transition-colors shrink-0">
+                      {initial}
+                    </div>
+                    <div>
+                      <h3 className="text-base sm:text-lg font-serif-editorial font-bold text-[#FAFAFA] group-hover:text-[#E8D9A8] transition-colors leading-snug">
+                        {alumni.name}
+                      </h3>
+                      <div className="text-[11px] text-[#71717A] mt-0.5 font-mono">
+                        ID: {alumni.id.toUpperCase()} · Shalom Hills
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Short Organization */}
-                <div className="text-[11px] text-[#71717A] mb-3 italic">
-                  {alumni.organization}
-                </div>
-
-                {/* Short Bio */}
-                <p className="text-xs text-[#A1A1AA] line-clamp-3 leading-relaxed mb-4">
-                  {alumni.bio}
-                </p>
-
-                {/* Mentorship Topics */}
-                <div className="mb-6">
-                  <div className="text-[11px] uppercase tracking-wider text-[#71717A] font-semibold mb-2">
-                    Mentorship Focus:
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {alumni.mentorshipTopics.map((topic, i) => (
-                      <span
-                        key={i}
-                        className="text-[11px] text-[#E8D9A8] bg-white/[0.04] border border-white/5 px-2.5 py-1 rounded"
+                  {/* Verified Contact Details (From Sheet) */}
+                  <div className="space-y-2 py-3 px-3.5 rounded-md bg-white/[0.02] border border-white/5 my-3 text-xs text-[#A1A1AA]">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 truncate">
+                        <Mail className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                        <span className="truncate text-[11px] font-mono text-[#FAFAFA]/90">{alumni.email}</span>
+                      </div>
+                      <button
+                        onClick={(e) => handleCopyContact(alumni.email, `${alumni.id}-email`, e)}
+                        className="text-[#71717A] hover:text-[#C9A227] p-1 cursor-pointer shrink-0"
+                        title="Copy email"
+                        aria-label="Copy Email"
                       >
-                        {topic}
-                      </span>
-                    ))}
+                        {copiedId === `${alumni.id}-email` ? (
+                          <Check className="w-3 h-3 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3 h-3" />
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                        <span className="text-[11px] font-mono text-[#FAFAFA]/90">{alumni.contactNumber}</span>
+                      </div>
+                      <button
+                        onClick={(e) => handleCopyContact(alumni.contactNumber, `${alumni.id}-phone`, e)}
+                        className="text-[#71717A] hover:text-[#C9A227] p-1 cursor-pointer shrink-0"
+                        title="Copy phone number"
+                        aria-label="Copy Phone"
+                      >
+                        {copiedId === `${alumni.id}-phone` ? (
+                          <Check className="w-3 h-3 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3 h-3" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Form Submission Timestamp */}
+                  <div className="text-[10px] text-[#71717A] flex items-center gap-1.5 mb-1 px-1">
+                    <Calendar className="w-3 h-3 text-[#C9A227]/70" />
+                    <span>Registered: {alumni.timestamp}</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Card Footer Actions */}
-              <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-2 mt-2">
-                <button
-                  onClick={() => onSelectAlumni(alumni)}
-                  className="text-xs text-[#FAFAFA] hover:text-[#C9A227] font-medium flex items-center gap-1 transition-colors cursor-pointer"
-                >
-                  <span>Explore Track</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
+                {/* Footer Action */}
+                <div className="pt-3 border-t border-white/5 flex items-center justify-between gap-2 mt-2">
+                  <button
+                    onClick={() => onSelectAlumni(alumni)}
+                    className="text-xs text-[#FAFAFA] hover:text-[#C9A227] font-medium flex items-center gap-1 transition-colors cursor-pointer"
+                  >
+                    <span>View Attendee Card</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
 
-                <button
-                  onClick={() => onOpenQuestionModal(alumni)}
-                  className="p-1.5 rounded bg-white/5 hover:bg-[#C9A227]/20 hover:text-[#E8D9A8] text-[#A1A1AA] transition-colors cursor-pointer"
-                  title="Ask this mentor a question"
-                  aria-label="Submit Question"
-                >
-                  <MessageSquare className="w-3.5 h-3.5" />
-                </button>
+                  <button
+                    onClick={() => onOpenQuestionModal(alumni)}
+                    className="p-1.5 rounded bg-white/5 hover:bg-[#C9A227]/20 hover:text-[#E8D9A8] text-[#A1A1AA] transition-colors cursor-pointer"
+                    title={`Submit a question for ${alumni.name}`}
+                    aria-label="Submit Question"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
+        {/* Load More Button */}
+        {filteredAlumni.length > visibleCount && (
+          <div className="text-center mt-10">
+            <button
+              onClick={() => setVisibleCount((prev) => prev + 24)}
+              className="px-6 py-2.5 rounded-lg text-xs font-poppins font-medium uppercase tracking-wider text-[#080808] bg-[#C9A227] hover:bg-[#E8D9A8] transition-all cursor-pointer shadow-lg"
+            >
+              Load More Alumni ({filteredAlumni.length - visibleCount} Remaining)
+            </button>
+          </div>
+        )}
+
         {filteredAlumni.length === 0 && (
-          <div className="text-center py-16 bg-[#111111] rounded-lg border border-white/5">
-            <p className="text-[#A1A1AA] text-sm">No profiles found matching your search.</p>
+          <div className="text-center py-16 bg-[#111114] rounded-lg border border-white/5">
+            <p className="text-[#A1A1AA] text-sm">
+              No alumni records found matching your current filter.
+            </p>
             <button
               onClick={() => {
-                setSelectedCategory('All');
                 setSearchQuery('');
+                setSelectedBatch('all');
+                setSortOrder('default');
               }}
               className="mt-4 px-4 py-2 text-xs text-[#C9A227] hover:underline cursor-pointer"
             >
-              Reset Filters
+              Reset Search & Batch Filter
             </button>
           </div>
         )}

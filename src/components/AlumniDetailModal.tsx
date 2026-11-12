@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import { AlumniProfile } from '../config/eventConfig.ts';
-import { X, GraduationCap, Briefcase, CheckCircle2, Send, Sparkles, AlertCircle } from 'lucide-react';
+import {
+  X,
+  CheckCircle2,
+  Send,
+  Sparkles,
+  AlertCircle,
+  Mail,
+  Phone,
+  Calendar,
+  Check,
+  Copy,
+  GraduationCap
+} from 'lucide-react';
 
 interface AlumniDetailModalProps {
   alumni: AlumniProfile | null;
@@ -19,13 +31,15 @@ export const AlumniDetailModal: React.FC<AlumniDetailModalProps> = ({
   const [isSent, setIsSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
 
   if (!alumni) return null;
 
   const handleSendQuestion = (e: React.FormEvent) => {
     e.preventDefault();
     if (!questionText.trim()) {
-      setError('Please enter a question or topic you would like the mentor to address.');
+      setError('Please enter a question or topic you would like this alumnus to address.');
       return;
     }
     setError('');
@@ -35,6 +49,19 @@ export const AlumniDetailModal: React.FC<AlumniDetailModalProps> = ({
       setIsSent(true);
     }, 800);
   };
+
+  const handleCopy = (text: string, type: 'email' | 'phone') => {
+    navigator.clipboard.writeText(text);
+    if (type === 'email') {
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2000);
+    } else {
+      setCopiedPhone(true);
+      setTimeout(() => setCopiedPhone(false), 2000);
+    }
+  };
+
+  const initial = alumni.name.trim().charAt(0).toUpperCase() || 'A';
 
   return (
     <div
@@ -49,7 +76,7 @@ export const AlumniDetailModal: React.FC<AlumniDetailModalProps> = ({
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#16161A]">
           <div className="flex items-center gap-2 text-xs font-mono text-[#C9A227] uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Alumni Mentorship Dossier</span>
+            <span>Alumni Attendee Dossier · Shalom Footprints 2026</span>
           </div>
           <button
             onClick={onClose}
@@ -65,71 +92,118 @@ export const AlumniDetailModal: React.FC<AlumniDetailModalProps> = ({
           {/* Profile Monogram & Name Lockup */}
           <div className="flex items-start gap-4">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#27272A] to-[#111113] border border-[#C9A227]/40 flex items-center justify-center text-2xl font-serif-editorial font-bold text-[#E8D9A8] shrink-0">
-              {alumni.name.charAt(0)}
+              {initial}
             </div>
             <div>
-              <div className="flex items-center gap-2 text-xs text-[#71717A] mb-1">
-                <span className="flex items-center gap-1 text-[#E8D9A8]">
-                  <GraduationCap className="w-3.5 h-3.5 text-[#C9A227]" />
-                  {alumni.graduationYear}
+              <div className="flex flex-wrap items-center gap-2 text-xs text-[#71717A] mb-1">
+                <span className="text-emerald-400 font-medium flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Verified Registered Alumnus</span>
                 </span>
                 <span>·</span>
-                <span>{alumni.category}</span>
+                <span className="text-[#A1A1AA] font-mono text-[11px]">ID: {alumni.id.toUpperCase()}</span>
               </div>
-              <h3 className="text-xl sm:text-2xl font-serif-editorial font-bold text-[#FAFAFA]">
+              <h3 className="text-2xl sm:text-3xl font-serif-editorial font-bold text-[#FAFAFA]">
                 {alumni.name}
               </h3>
-              <div className="flex items-center gap-1.5 text-xs text-[#A1A1AA] mt-1">
-                <Briefcase className="w-3.5 h-3.5 text-[#71717A]" />
-                <span>{alumni.profession}</span>
-                <span>·</span>
-                <span className="italic">{alumni.organization}</span>
+              
+              {/* Prominent Graduation Batch Tag */}
+              <div className="flex items-center gap-2 mt-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#C9A227]/20 text-[#E8D9A8] border border-[#C9A227]/40">
+                  <GraduationCap className="w-4 h-4 text-[#C9A227]" />
+                  <span>Graduation Batch: {alumni.batchYear}</span>
+                </span>
+                <span className="text-xs text-[#71717A]">· Shalom Hills International School</span>
               </div>
             </div>
           </div>
 
-          {/* Bio */}
-          <div>
-            <h4 className="text-xs uppercase tracking-wider text-[#71717A] font-semibold mb-2">
-              Background &amp; Journey
-            </h4>
-            <p className="text-sm text-[#A1A1AA] leading-relaxed font-light">
-              {alumni.bio}
-            </p>
-          </div>
+          {/* Registration Details Strip */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-lg bg-white/[0.03] border border-white/5 text-xs">
+            <div className="space-y-1">
+              <div className="text-[11px] uppercase tracking-wider text-[#71717A]">
+                Graduation Batch
+              </div>
+              <div className="flex items-center gap-1.5 text-[#E8D9A8] font-mono text-xs font-semibold">
+                <GraduationCap className="w-3.5 h-3.5 text-[#C9A227]" />
+                <span>Class of {alumni.batchYear}</span>
+              </div>
+            </div>
 
-          {/* Mentorship Focus */}
-          <div>
-            <h4 className="text-xs uppercase tracking-wider text-[#71717A] font-semibold mb-2">
-              Key Breakout Themes
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {alumni.mentorshipTopics.map((topic, i) => (
-                <span
-                  key={i}
-                  className="text-xs text-[#E8D9A8] bg-white/[0.04] border border-[#C9A227]/30 px-3 py-1.5 rounded-md"
+            <div className="space-y-1">
+              <div className="text-[11px] uppercase tracking-wider text-[#71717A]">
+                Verification Status
+              </div>
+              <div className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Confirmed in Official Form Sheet</span>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="text-[11px] uppercase tracking-wider text-[#71717A]">
+                Email Address
+              </div>
+              <div className="flex items-center justify-between text-[#FAFAFA]">
+                <div className="flex items-center gap-1.5 truncate">
+                  <Mail className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                  <span className="font-mono text-[11px] truncate">{alumni.email}</span>
+                </div>
+                <button
+                  onClick={() => handleCopy(alumni.email, 'email')}
+                  className="p-1 text-[#71717A] hover:text-[#C9A227] cursor-pointer shrink-0"
+                  title="Copy Email"
                 >
-                  {topic}
-                </span>
-              ))}
+                  {copiedEmail ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="text-[11px] uppercase tracking-wider text-[#71717A]">
+                Contact Number
+              </div>
+              <div className="flex items-center justify-between text-[#FAFAFA]">
+                <div className="flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                  <span className="font-mono text-[11px]">{alumni.contactNumber}</span>
+                </div>
+                <button
+                  onClick={() => handleCopy(alumni.contactNumber, 'phone')}
+                  className="p-1 text-[#71717A] hover:text-[#C9A227] cursor-pointer shrink-0"
+                  title="Copy Phone"
+                >
+                  {copiedPhone ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-1 sm:col-span-2 pt-2 border-t border-white/5 flex items-center justify-between text-[#71717A]">
+              <div className="flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-[#C9A227]" />
+                <span>Form Submission: {alumni.timestamp}</span>
+              </div>
+              <div className="flex items-center gap-1 text-[#C9A227] text-[11px] font-mono">
+                <span>Shalom Footprints 2026</span>
+              </div>
             </div>
           </div>
 
           {/* Ask a Question Section */}
-          <div className="pt-6 border-t border-white/10">
+          <div className="pt-4 border-t border-white/10">
             <h4 className="text-sm font-serif-editorial font-bold text-[#FAFAFA] mb-1 flex items-center gap-1.5">
-              <span>Submit a Prior Question for this Mentor's Roundtable</span>
+              <span>Submit a Prior Question for {alumni.name} (Batch {alumni.batchYear})</span>
             </h4>
             <p className="text-xs text-[#71717A] mb-4">
-              Your inquiry will be curated and presented during the sector panel on 14 November 2026.
+              Your inquiry will be queued for discussion during the alumni mentorship sessions on 14 November 2026.
             </p>
 
             {isSent ? (
               <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-2.5">
                 <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold block">Question queued for panel discussion.</span>
-                  Thank you! The moderator will include this in the breakout circle.
+                  <span className="font-semibold block">Question successfully queued.</span>
+                  Thank you! The student moderator will forward this topic to {alumni.name}.
                 </div>
               </div>
             ) : (
@@ -137,7 +211,7 @@ export const AlumniDetailModal: React.FC<AlumniDetailModalProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input
                     type="text"
-                    placeholder="Your Name (e.g. Maya)"
+                    placeholder="Your Name (e.g. Diya)"
                     value={studentName}
                     onChange={(e) => setStudentName(e.target.value)}
                     className="bg-white/5 border border-white/10 rounded-lg px-3.5 py-2 text-xs text-[#FAFAFA] placeholder-[#71717A] focus:outline-none focus:border-[#C9A227]"
@@ -153,7 +227,7 @@ export const AlumniDetailModal: React.FC<AlumniDetailModalProps> = ({
 
                 <textarea
                   rows={3}
-                  placeholder={`What would you like to ask ${alumni.name}?`}
+                  placeholder={`What would you like to ask ${alumni.name} about their journey and advice for current students?`}
                   value={questionText}
                   onChange={(e) => setQuestionText(e.target.value)}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-2 text-xs text-[#FAFAFA] placeholder-[#71717A] focus:outline-none focus:border-[#C9A227] resize-none"

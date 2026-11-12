@@ -5,19 +5,9 @@
  * prizes, and FAQs are maintained here for single-source updates.
  */
 
-export interface AlumniProfile {
-  id: string;
-  name: string;
-  graduationYear: string;
-  category: string;
-  profession: string;
-  organization: string;
-  bio: string;
-  mentorshipTopics: string[];
-  linkedInUrl?: string;
-  isPlaceholder?: boolean;
-  avatarSeed?: string;
-}
+import { REGISTERED_ALUMNI, RegisteredAlumnus } from '../data/registeredAlumni.ts';
+
+export type AlumniProfile = RegisteredAlumnus;
 
 export interface AwardCategory {
   id: string;
@@ -228,116 +218,17 @@ export const EVENT_CONFIG = {
 
   categories: [
     'All',
-    'Technology',
-    'Business & Entrepreneurship',
     'Medicine & Healthcare',
-    'Law',
-    'Engineering',
-    'Design & Creative Industries',
-    'Finance',
-    'Civil Services',
-    'Higher Education',
+    'Engineering & Technology',
+    'Law & Legal Studies',
+    'Business & Management',
+    'Higher Education & Research',
+    'Alumni Leadership',
+    'General Mentorship',
   ],
 
-  // Illustrative placeholder profiles clearly marked as per prompt instructions
-  alumniProfiles: [
-    {
-      id: 'alumni-tech-1',
-      name: 'Technology Leader (Cohort 2017)',
-      graduationYear: 'Class of 2017',
-      category: 'Technology',
-      profession: 'Senior Software Architect / AI Systems',
-      organization: 'Global Enterprise Tech [Pending Name Confirmation]',
-      bio: 'Graduated from Shalom Hills with a passion for computer science. Went on to pursue computer engineering and now leads scalable cloud intelligence teams. Returning to mentor on breaking into tech, portfolio building, and AI careers.',
-      mentorshipTopics: ['AI & Software Engineering', 'Tech Internships', 'University Computer Science Programs'],
-      isPlaceholder: true,
-      avatarSeed: 'TechArchitect',
-    },
-    {
-      id: 'alumni-med-1',
-      name: 'Medical Scholar (Cohort 2015)',
-      graduationYear: 'Class of 2015',
-      category: 'Medicine & Healthcare',
-      profession: 'Resident Physician & Public Health Researcher',
-      organization: 'Premier Medical College & Research Hospital',
-      bio: 'Navigated national medical entrance examinations and clinical residency. Passionate about guiding aspiring doctors on medical school rigor, mental health balance, and global healthcare opportunities.',
-      mentorshipTopics: ['Medical Entrance Prep (NEET)', 'Clinical Specialties', 'Global Medical Licensing'],
-      isPlaceholder: true,
-      avatarSeed: 'MedDoctor',
-    },
-    {
-      id: 'alumni-biz-1',
-      name: 'Venture Founder (Cohort 2014)',
-      graduationYear: 'Class of 2014',
-      category: 'Business & Entrepreneurship',
-      profession: 'Co-Founder & Chief Product Officer',
-      organization: 'Venture-Backed FinTech Platform',
-      bio: 'From student council at Shalom to raising institutional capital and building products used by over 500,000 customers. Eager to speak about product management, startup resilience, and entrepreneurship.',
-      mentorshipTopics: ['Startup Fundraising', 'Product Design & Strategy', 'Business School Selection'],
-      isPlaceholder: true,
-      avatarSeed: 'BizFounder',
-    },
-    {
-      id: 'alumni-law-1',
-      name: 'Appellate Counsel (Cohort 2016)',
-      graduationYear: 'Class of 2016',
-      category: 'Law',
-      profession: 'Advocate & Dispute Resolution Specialist',
-      organization: 'Supreme Court & High Court Chambers',
-      bio: 'Studied at top national law schools after graduating Shalom. Specializes in corporate litigation and constitutional advocacy. Returns to discuss CLAT prep, moot court competitions, and corporate vs litigation paths.',
-      mentorshipTopics: ['Law School Admissions (CLAT)', 'Corporate Law vs Litigation', 'Public Policy'],
-      isPlaceholder: true,
-      avatarSeed: 'LegalCounsel',
-    },
-    {
-      id: 'alumni-fin-1',
-      name: 'Investment Banker (Cohort 2018)',
-      graduationYear: 'Class of 2018',
-      category: 'Finance',
-      profession: 'Investment Banking Analyst / Private Equity',
-      organization: 'Tier-1 Investment Bank',
-      bio: 'Specializing in cross-border mergers and capital advisory. Enjoys mentoring young math and economics students on breaking into quantitative finance, CFA pathways, and global business schools.',
-      mentorshipTopics: ['Investment Banking & PE', 'Economics & Finance Degrees', 'Financial Modelling Basics'],
-      isPlaceholder: true,
-      avatarSeed: 'FinanceAnalyst',
-    },
-    {
-      id: 'alumni-des-1',
-      name: 'Creative Director (Cohort 2019)',
-      graduationYear: 'Class of 2019',
-      category: 'Design & Creative Industries',
-      profession: 'Brand Experience & Interaction Designer',
-      organization: 'International Design Studio',
-      bio: 'From drawing sketchbooks in school art rooms to designing design systems for world-renowned brands. Ready to mentor on design entrance tests (NID/UCEED), portfolio curation, and modern design careers.',
-      mentorshipTopics: ['Design Portfolios', 'UI/UX & Brand Strategy', 'Creative Industry Trajectories'],
-      isPlaceholder: true,
-      avatarSeed: 'DesignerCreator',
-    },
-    {
-      id: 'alumni-civ-1',
-      name: 'Public Policy Officer (Cohort 2013)',
-      graduationYear: 'Class of 2013',
-      category: 'Civil Services',
-      profession: 'Public Policy Advisor & Administration Fellow',
-      organization: 'Public Governance Think Tank',
-      bio: 'Dedicated to impactful public administration and developmental policies. Returning to demystify Civil Services examinations (UPSC), public governance careers, and social impact pathways.',
-      mentorshipTopics: ['UPSC & Civil Services Prep', 'Public Policy Careers', 'International Development'],
-      isPlaceholder: true,
-      avatarSeed: 'CivilService',
-    },
-    {
-      id: 'alumni-edu-1',
-      name: 'Doctoral Researcher (Cohort 2016)',
-      graduationYear: 'Class of 2016',
-      category: 'Higher Education',
-      profession: 'PhD Candidate & Research Fellow',
-      organization: 'Leading Global Research University',
-      bio: 'Conducting advanced research in molecular genetics. Excited to advise high school students on competitive international university applications, scholarships, academic research, and publishing.',
-      mentorshipTopics: ['Ivy League & Oxbridge Applications', 'Scholarships & Fellowships', 'Scientific Research'],
-      isPlaceholder: true,
-      avatarSeed: 'ResearchScholar',
-    },
-  ] as AlumniProfile[],
+  // Real verified registered alumni responses for Shalom Footprints 2026
+  alumniProfiles: REGISTERED_ALUMNI,
 
   gallery: [
     {
