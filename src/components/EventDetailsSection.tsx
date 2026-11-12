@@ -16,8 +16,8 @@ export const EventDetailsSection: React.FC = () => {
       'SUMMARY:SHALOM FOOTPRINTS — Alumni Mentorship & Guidance Event',
       'DESCRIPTION:They\\\'ve Walked the Path. Now, They\\\'ll Help You Find Yours. Hosted at Shalom Hills International School.',
       'LOCATION:Shalom Hills International School, Block C, Sushant Lok Phase I, Sector 43, Gurugram, Haryana 122002',
-      'DTSTART:20261114T110000Z', // approx 4:30 PM IST (UTC+5:30)
-      'DTEND:20261114T150000Z',   // approx 8:30 PM IST
+      'DTSTART:20261114T053000Z', // 11:00 AM IST (UTC+5:30)
+      'DTEND:20261114T093000Z',   // 03:00 PM IST
       'STATUS:CONFIRMED',
       'END:VEVENT',
       'END:VCALENDAR'
@@ -137,16 +137,17 @@ export const EventDetailsSection: React.FC = () => {
           {/* Quick Details Sidebar (5 cols) */}
           <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
             {/* Eligibility Card */}
-            <div className="p-6 rounded-lg bg-[#141418] border border-white/10">
+            <div className="p-6 rounded-lg bg-[#141418]/85 backdrop-blur-md border border-white/10">
               <div className="flex items-center gap-2 text-xs font-semibold text-[#C9A227] uppercase tracking-wider mb-2">
                 <UserCheck className="w-4 h-4" />
-                <span>Eligibility &amp; Attendees</span>
+                <span>Strict Attendance Eligibility</span>
               </div>
-              <p className="text-xs text-[#FAFAFA] leading-relaxed">
+              <p className="text-xs text-[#FAFAFA] font-medium leading-relaxed">
                 {EVENT_CONFIG.schedule.eligibility}
               </p>
-              <div className="text-[11px] text-[#71717A] mt-2">
-                Alumni from all graduating cohorts are warmly welcomed to reconnect and mentor.
+              <div className="text-[11px] text-[#A1A1AA] mt-3 p-2.5 rounded bg-white/[0.03] border border-white/5">
+                <span className="text-[#E8D9A8] font-semibold block mb-0.5">Note on Student Admission:</span>
+                Only designated students assigned on official duty are permitted on campus. Students who are not on duty will not be permitted entry.
               </div>
             </div>
 

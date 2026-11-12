@@ -11,8 +11,8 @@ interface TimeLeft {
 }
 
 export const CountdownTimer: React.FC = () => {
-  // Target: 14 November 2026, 16:30 IST (UTC+5:30)
-  const targetDate = new Date('2026-11-14T16:30:00+05:30').getTime();
+  // Target: 14 November 2026, 11:00 AM IST (UTC+5:30)
+  const targetDate = new Date('2026-11-14T11:00:00+05:30').getTime();
 
   const calculateTimeLeft = (): TimeLeft => {
     const now = new Date().getTime();
@@ -44,7 +44,7 @@ export const CountdownTimer: React.FC = () => {
   }, []);
 
   const handleCopyDate = () => {
-    navigator.clipboard.writeText('14 November 2026, 04:30 PM IST — Shalom Footprints at Shalom Hills International School');
+    navigator.clipboard.writeText('14 November 2026, From 11:00 AM IST onwards — Shalom Footprints at Shalom Hills International School');
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
@@ -59,8 +59,8 @@ export const CountdownTimer: React.FC = () => {
       'SUMMARY:SHALOM FOOTPRINTS — Alumni Mentorship & Guidance Event',
       'DESCRIPTION:They\\\'ve Walked the Path. Now, They\\\'ll Help You Find Yours. Hosted at Shalom Hills International School.',
       'LOCATION:Shalom Hills International School, Block C, Sushant Lok Phase I, Sector 43, Gurugram, Haryana 122002',
-      'DTSTART:20261114T110000Z', // 4:30 PM IST
-      'DTEND:20261114T150000Z',   // 8:30 PM IST
+      'DTSTART:20261114T053000Z', // 11:00 AM IST (UTC+5:30)
+      'DTEND:20261114T093000Z',   // 03:00 PM IST
       'STATUS:CONFIRMED',
       'END:VEVENT',
       'END:VCALENDAR'

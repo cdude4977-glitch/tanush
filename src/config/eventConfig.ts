@@ -11,12 +11,11 @@ export type AlumniProfile = RegisteredAlumnus;
 
 export interface AwardCategory {
   id: string;
+  number: number;
   title: string;
   subtitle: string;
   description: string;
-  eligibility: string;
-  criteria: string;
-  recipientPlaceholder: string;
+  criteria?: string;
   status: 'Pending Official Announcement' | 'Nominations Open' | 'Confirmed';
 }
 
@@ -50,14 +49,14 @@ export const EVENT_CONFIG = {
   schedule: {
     date: '14 November 2026',
     dayOfWeek: 'Saturday',
-    time: '04:30 PM – 08:30 PM IST',
-    timeNotice: 'Schedule subject to final confirmation by school organizing committee',
+    time: 'From 11:00 AM IST onwards',
+    timeNotice: 'Official gathering commences from 11:00 AM onwards',
     venue: 'Shalom Hills International School',
     hall: 'Main Auditorium & Amphitheatre Courtyard',
     address: 'Block C, Sushant Lok Phase I, Sector 43, Gurugram, Haryana 122002',
-    dressCode: 'Smart Formal / Business Casual',
-    eligibility: 'Students of Grades 9–12, Parents, and Alumni of Shalom Hills International School',
-    targetAudience: 'High school students seeking career direction and alumni eager to mentor',
+    dressCode: 'Smart Formal / Business Casual (School uniform for Students on Duty)',
+    eligibility: 'Strictly for Alumni of Shalom Hills International School and designated Students on Duty only (Not open to students who are not on duty)',
+    targetAudience: 'Alumni of Shalom Hills International School and designated Students on Duty',
   },
 
   registration: {
@@ -185,34 +184,94 @@ export const EVENT_CONFIG = {
 
   awardCategories: [
     {
-      id: 'award-mentorship',
-      title: 'Excellence in Mentorship Citation',
-      subtitle: 'Alumni Leadership',
-      description: 'Recognizing alumni who have dedicated significant time, effort, and insight to guide students forward.',
-      eligibility: 'Alumni of Shalom Hills International School actively mentoring or contributing to youth guidance.',
-      criteria: 'Demonstrated dedication to student empowerment, thought leadership, and institutional engagement.',
-      recipientPlaceholder: 'Official recipient to be announced during the evening ceremony on 14 Nov 2026',
-      status: 'Pending Official Announcement',
-    },
-    {
-      id: 'award-trailblazer',
-      title: 'Young Trailblazer Recognition',
-      subtitle: 'Professional Impact',
-      description: 'Celebrating an alumnus who has achieved extraordinary pioneering milestones early in their professional journey.',
-      eligibility: 'Alumni graduated within the past 10 years demonstrating impact in their chosen domain.',
-      criteria: 'Innovation, societal impact, leadership, or groundbreaking research and creative distinction.',
-      recipientPlaceholder: 'Official nomination shortlist pending committee review',
+      id: 'award-rising-star',
+      number: 1,
+      title: 'Shalom Rising Star Award',
+      subtitle: 'Young Achiever',
+      description: 'Notable early achievement and potential.',
+      criteria: 'Recognising notable early-career milestones, creative spark, and promising potential of young alumni.',
       status: 'Nominations Open',
     },
     {
-      id: 'award-visionary',
-      title: 'Next-Gen Student Aspirant Citation',
-      subtitle: 'Student Honors',
-      description: 'Commending current senior students who exemplify proactive inquiry, character, and visionary ambition.',
-      eligibility: 'Enrolled Grades 11–12 students participating in Shalom Footprints mentorship programs.',
-      criteria: 'Active participation, insightful dialogue contributions, and collaborative leadership.',
-      recipientPlaceholder: 'To be conferred by the Alumni Board & School Leadership',
-      status: 'Pending Official Announcement',
+      id: 'award-academic',
+      number: 2,
+      title: 'Shalom Academic & Research Excellence Award',
+      subtitle: 'Knowledge, Discovery and Research',
+      description: 'Knowledge, discovery and research.',
+      criteria: 'Contributions to higher academic research, scientific discoveries, advanced scholarship, and intellectual pursuit.',
+      status: 'Nominations Open',
+    },
+    {
+      id: 'award-emerging-pro',
+      number: 3,
+      title: 'Shalom Emerging Professional Award',
+      subtitle: 'Early-Career Growth',
+      description: 'and early-career growth.',
+      criteria: 'Excellence in corporate, enterprise, and early-career professional leadership and execution.',
+      status: 'Nominations Open',
+    },
+    {
+      id: 'award-spark',
+      number: 4,
+      title: 'Shalom Spark Award',
+      subtitle: 'Innovation & Entrepreneurship',
+      description: 'Fresh ideas turned into ventures.',
+      criteria: 'Transforming original ideas into viable enterprises, startups, product innovations, or game-changing business solutions.',
+      status: 'Nominations Open',
+    },
+    {
+      id: 'award-leadership',
+      number: 5,
+      title: 'Shalom Leadership & Collaboration Award',
+      subtitle: 'Community Impact & Team Leadership',
+      description: 'Community impact and team leadership.',
+      criteria: 'Demonstrated team leadership, ethical management, collaborative impact, and organizational excellence.',
+      status: 'Nominations Open',
+    },
+    {
+      id: 'award-compassion',
+      number: 6,
+      title: 'Shalom Compassion & Community Impact Award',
+      subtitle: 'Service to People & the Planet',
+      description: 'Service to people and the planet.',
+      criteria: 'Dedicated social impact, humanitarian work, sustainability initiatives, and community service.',
+      status: 'Nominations Open',
+    },
+    {
+      id: 'award-creative',
+      number: 7,
+      title: 'Shalom Creative Footprints Award',
+      subtitle: 'Arts, Writing and Photography',
+      description: 'Arts, writing and photography.',
+      criteria: 'Distinction in creative fields including visual arts, photography, creative writing, filmmaking, and design.',
+      status: 'Nominations Open',
+    },
+    {
+      id: 'award-sports',
+      number: 8,
+      title: 'Shalom Sports & Resilience Award',
+      subtitle: 'Athletics & Perseverance',
+      description: 'Athletic achievement and perseverance.',
+      criteria: 'Excellence in competitive sports, athletic leadership, resilience, and sportsmanship.',
+      status: 'Nominations Open',
+    },
+    {
+      id: 'award-global',
+      number: 9,
+      title: 'Shalom Global Perspectives Award',
+      subtitle: 'Global Exposure & International Work',
+      description: 'Global exposure and international work.',
+      criteria: 'International academic or professional exposure, global research, cross-cultural collaboration, and global leadership.',
+      status: 'Nominations Open',
+    },
+    {
+      id: 'award-roots',
+      number: 10,
+      title: 'Shalom Roots Award',
+      subtitle: 'Giving Back to Shalom',
+      description: 'Giving back to the school community.',
+      criteria: 'Honoring alumni who stay actively connected, mentor Shalom students, and give back to their alma mater.',
+      status: 'Nominations Open',
     },
   ] as AwardCategory[],
 
@@ -283,55 +342,55 @@ export const EVENT_CONFIG = {
       id: 'faq-1',
       question: 'What is Shalom Footprints?',
       answer:
-        'Shalom Footprints is a flagship alumni mentorship and guidance initiative hosted by Shalom Hills International School. It brings accomplished alumni back to their alma mater to share their real-world experiences, provide career and academic guidance, and inspire the next generation of students.',
+        'Shalom Footprints is the flagship alumni meet and mentorship initiative hosted by Shalom Hills International School under the theme "Tracing Roots, Embracing Wings". It brings alumni back to their alma mater to celebrate achievements, reconnect across generations, and guide students.',
       category: 'Event Overview',
       isConfirmed: true,
     },
     {
       id: 'faq-2',
-      question: 'Who can attend the event on 14 November 2026?',
+      question: 'Who is eligible to attend the event on 14 November 2026?',
       answer:
-        'The event is open to high school students (particularly Grades 9 through 12), their parents, alumni across graduating batches, and school faculty. Prior registration is required to ensure adequate seating and thematic pod assignment.',
+        'Attendance is strictly reserved for Alumni of Shalom Hills International School and designated Students on Duty only. Students who are not on duty are not eligible to attend.',
       category: 'Attendance & Eligibility',
       isConfirmed: true,
     },
     {
       id: 'faq-3',
-      question: 'How do I register for Shalom Footprints?',
+      question: 'What is the schedule and timing for Shalom Footprints?',
       answer:
-        'You can register online using the "Register Now" button on this website. It connects to the official event registration portal. Alternatively, students can register through the designated internal school coordinator desk.',
-      category: 'Registration',
+        'The official event commences from 11:00 AM IST onwards on Saturday, 14 November 2026 at the Main Auditorium of Shalom Hills International School, Gurugram.',
+      category: 'Timing & Schedule',
       isConfirmed: true,
     },
     {
       id: 'faq-4',
       question: 'Where will the event take place?',
       answer:
-        'The event takes place at the campus of Shalom Hills International School, Block C, Sushant Lok Phase I, Sector 43, Gurugram. The plenary talks will be in the Main Auditorium, followed by breakout sessions across dedicated seminar halls.',
+        'The event takes place at the campus of Shalom Hills International School, Block C, Sushant Lok Phase I, Sector 43, Gurugram, Haryana. The central gathering will be hosted in the Main Auditorium and campus courtyards.',
       category: 'Venue & Logistics',
       isConfirmed: true,
     },
     {
       id: 'faq-5',
-      question: 'What activities and formats are planned?',
+      question: 'What is the motto and theme of Shalom Footprints 2026?',
       answer:
-        'The evening comprises keynote alumni journeys, sector-wise interactive mentorship circles (Technology, Medicine, Law, Finance, Design, Civil Services, etc.), open Q&A sessions, awards recognition, and an alumni-student networking reception.',
-      category: 'Program & Schedule',
+        'The 2026 meet is themed "Tracing Roots, Embracing Wings" with the spirit of "reconnect.relive.reunite" and the enduring Shalomite motto: "Once a Shalomite... Always a Shalomite!"',
+      category: 'Theme & Ethos',
       isConfirmed: true,
     },
     {
       id: 'faq-6',
-      question: 'Will there be prizes or recognition at the event?',
+      question: 'What are the 10 official Alumni Awards 2026 categories?',
       answer:
-        'Yes. Shalom Footprints includes an official recognition ceremony honoring distinguished alumni contributions to mentorship, as well as citations acknowledging visionary student ambition and initiatives.',
-      category: 'Awards & Honors',
+        'The Alumni Awards 2026 recognize meaningful achievement across 10 categories: (1) Shalom Rising Star Award (Young Achiever), (2) Shalom Academic & Research Excellence Award, (3) Shalom Emerging Professional Award, (4) Shalom Spark Award (Innovation & Entrepreneurship), (5) Shalom Leadership & Collaboration Award, (6) Shalom Compassion & Community Impact Award, (7) Shalom Creative Footprints Award, (8) Shalom Sports & Resilience Award, (9) Shalom Global Perspectives Award, and (10) Shalom Roots Award (Giving Back to Shalom).',
+      category: 'Alumni Awards 2026',
       isConfirmed: true,
     },
     {
       id: 'faq-7',
-      question: 'Whom should I contact for assistance or alumni participation queries?',
+      question: 'Whom should I contact for queries or alumni assistance?',
       answer:
-        'For queries, alumni speaker registration, or student inquiries, you can reach the Shalom Footprints Organizing Secretariat at footprints@shalomhills.com or contact the school administrative desk at (+91) 0124-257-0440.',
+        'For queries, alumni assistance, or award nomination inquiries, you can reach the Shalom Footprints Organizing Secretariat at footprints@shalomhills.com or call (+91) 0124-257-0440.',
       category: 'Contact & Support',
       isConfirmed: true,
     },
