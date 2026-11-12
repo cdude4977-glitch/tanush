@@ -73,7 +73,19 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080808] text-[#FAFAFA] flex flex-col font-sans selection:bg-[#C9A227]/30 selection:text-[#FFF7E6]">
+    <div className="relative min-h-screen bg-[#080808] text-[#FAFAFA] flex flex-col font-sans selection:bg-[#C9A227]/30 selection:text-[#FFF7E6]">
+      {/* GLOBAL AUDITORIUM BACKDROP (50% BLUR) BEHIND THE ENTIRE WEBSITE */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <img
+          src="/images/shalom_auditorium.png"
+          alt="Shalom Hills International School Auditorium Main Backdrop"
+          className="w-full h-full object-cover object-center scale-105 filter blur-[6px] opacity-85"
+        />
+        {/* Balanced scrim: auditorium features (school arch, stage, vaulted ceiling) clearly recognizable while keeping text crisp */}
+        <div className="absolute inset-0 bg-[#080808]/65" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-[#080808]/30 to-[#080808]/85" />
+      </div>
+
       {/* Refined Tabular Navbar with active state */}
       <Navbar
         activeTab={activeTab}
@@ -81,7 +93,7 @@ export default function App() {
       />
 
       {/* Main Tab Views Container */}
-      <main className="flex-1 pt-16">
+      <main className="relative z-10 flex-1 pt-16 bg-transparent">
         {/* TAB 1: OVERVIEW & STORY */}
         {activeTab === 'overview' && (
           <div className="animate-in fade-in duration-300">
@@ -92,7 +104,7 @@ export default function App() {
             <StorySection />
 
             {/* Quick Transition Banner to Other Tabs */}
-            <section className="py-16 px-4 sm:px-8 border-t border-white/5 bg-[#0C0C0E]">
+            <section className="py-16 px-4 sm:px-8 border-t border-white/10 bg-[#0C0C0E]/60 backdrop-blur-md">
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-10">
                   <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#C9A227]">

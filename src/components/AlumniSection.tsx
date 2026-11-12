@@ -78,7 +78,7 @@ export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, on
   const displayedAlumni = filteredAlumni.slice(0, visibleCount);
 
   return (
-    <section id="alumni" className="relative py-16 sm:py-24 px-4 sm:px-8 bg-[#080808]">
+    <section id="alumni" className="relative py-16 sm:py-24 px-4 sm:px-8 bg-transparent">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
@@ -258,7 +258,7 @@ export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, on
             return (
               <div
                 key={alumni.id}
-                className="group relative flex flex-col justify-between p-5 rounded-lg bg-[#111114] border border-white/10 hover:border-[#C9A227]/40 hover:bg-[#141418] transition-all duration-300 shadow-lg shadow-black/40 hover:-translate-y-1"
+                className="group relative flex flex-col justify-between p-5 rounded-lg bg-[#111114]/80 backdrop-blur-md border border-white/10 hover:border-[#C9A227]/40 hover:bg-[#141418]/90 transition-all duration-300 shadow-lg shadow-black/40 hover:-translate-y-1"
               >
                 <div>
                   {/* Top Status & Batch Badge Row */}

@@ -32,7 +32,7 @@ export const GallerySection: React.FC = () => {
   };
 
   return (
-    <section className="relative py-24 sm:py-32 px-6 sm:px-8 bg-[#080808] border-t border-white/5">
+    <section className="relative py-24 sm:py-32 px-6 sm:px-8 bg-transparent border-t border-white/10">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">

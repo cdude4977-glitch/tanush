@@ -6,7 +6,7 @@ export const JourneyTimelineSection: React.FC = () => {
   const [activeStage, setActiveStage] = useState<number>(0);
 
   return (
-    <section className="relative py-24 sm:py-32 px-6 sm:px-8 bg-[#080808] border-t border-white/5 overflow-hidden">
+    <section className="relative py-24 sm:py-32 px-6 sm:px-8 bg-transparent border-t border-white/10 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="max-w-3xl mb-16">

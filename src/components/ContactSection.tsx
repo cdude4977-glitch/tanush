@@ -24,7 +24,7 @@ export const ContactSection: React.FC = () => {
   };
 
   return (
-    <section className="relative py-24 sm:py-32 px-6 sm:px-8 bg-[#0A0A0C] border-t border-white/5">
+    <section className="relative py-24 sm:py-32 px-6 sm:px-8 bg-transparent border-t border-white/10">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left Column: Contact Details (5 cols) */}

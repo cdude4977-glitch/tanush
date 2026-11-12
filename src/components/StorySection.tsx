@@ -4,7 +4,7 @@ import { Compass } from 'lucide-react';
 
 export const StorySection: React.FC = () => {
   return (
-    <section id="story" className="relative py-24 sm:py-32 px-6 sm:px-8 border-t border-white/5 bg-[#0A0A0A]">
+    <section id="story" className="relative py-24 sm:py-32 px-6 sm:px-8 border-t border-white/10 bg-transparent">
       {/* Decorative Gold Ambient Line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227] to-transparent" />
 

@@ -4,7 +4,7 @@ import { Sparkles, ArrowUpRight } from 'lucide-react';
 
 export const EventHighlightsSection: React.FC = () => {
   return (
-    <section className="relative py-24 sm:py-32 px-6 sm:px-8 bg-[#080808] border-t border-white/5">
+    <section className="relative py-24 sm:py-32 px-6 sm:px-8 bg-transparent border-t border-white/10">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -27,8 +27,8 @@ export const EventHighlightsSection: React.FC = () => {
             return (
               <div
                 key={item.title}
-                className={`relative p-8 rounded-lg bg-[#111111] border border-white/10 hover:border-[#C9A227]/40 transition-all duration-300 flex flex-col justify-between group shadow-lg ${
-                  isFeatured ? 'md:col-span-2 lg:col-span-1 bg-gradient-to-br from-[#18181B] to-[#0E0E10]' : ''
+                className={`relative p-8 rounded-lg bg-[#111111]/75 backdrop-blur-md border border-white/10 hover:border-[#C9A227]/40 transition-all duration-300 flex flex-col justify-between group shadow-lg ${
+                  isFeatured ? 'md:col-span-2 lg:col-span-1 bg-gradient-to-br from-[#18181B]/80 to-[#0E0E10]/80' : ''
                 }`}
               >
                 <div>

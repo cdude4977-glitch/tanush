@@ -269,12 +269,12 @@ export const EVENT_CONFIG = {
     },
     {
       id: 'gallery-5',
-      title: 'Auditorium Celebration',
-      subtitle: 'Stage & Keynotes',
-      category: 'Event Stage',
-      src: '/images/gallery_celebration_stage_1793295221108.jpg',
+      title: 'Main School Auditorium & Stage',
+      subtitle: 'Shalom Hills International School',
+      category: 'Event Venue',
+      src: '/images/shalom_auditorium.png',
       aspect: 'landscape',
-      caption: 'The main auditorium setting where inspiring keynote addresses and award presentations will unfold.',
+      caption: 'The official venue for Shalom Footprints 2026 — the school auditorium where inspiring keynote addresses and award presentations will unfold.',
     },
   ],
 

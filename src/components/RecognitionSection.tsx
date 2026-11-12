@@ -4,7 +4,7 @@ import { Award, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
 
 export const RecognitionSection: React.FC = () => {
   return (
-    <section className="relative py-24 sm:py-32 px-6 sm:px-8 bg-[#0B0B0C] border-t border-white/5">
+    <section className="relative py-24 sm:py-32 px-6 sm:px-8 bg-transparent border-t border-white/10">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center mb-16">
@@ -25,7 +25,7 @@ export const RecognitionSection: React.FC = () => {
           {EVENT_CONFIG.awardCategories.map((award) => (
             <div
               key={award.id}
-              className="relative p-8 rounded-lg bg-[#121214] border border-white/10 hover:border-[#C9A227]/40 transition-all duration-300 flex flex-col justify-between group shadow-xl"
+              className="relative p-8 rounded-lg bg-[#121214]/75 backdrop-blur-md border border-white/10 hover:border-[#C9A227]/40 transition-all duration-300 flex flex-col justify-between group shadow-xl"
             >
               <div>
                 {/* Medallion Icon & Category */}

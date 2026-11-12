@@ -8,7 +8,7 @@ interface MentorshipSectionProps {
 
 export const MentorshipSection: React.FC<MentorshipSectionProps> = ({ onExploreAlumni }) => {
   return (
-    <section id="mentorship" className="relative py-24 sm:py-32 px-6 sm:px-8 bg-[#0D0D0E] border-t border-white/5">
+    <section id="mentorship" className="relative py-24 sm:py-32 px-6 sm:px-8 bg-transparent border-t border-white/10">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="max-w-3xl mb-16">
@@ -29,7 +29,7 @@ export const MentorshipSection: React.FC<MentorshipSectionProps> = ({ onExploreA
           {EVENT_CONFIG.mentorshipPillars.map((pillar) => (
             <div
               key={pillar.id}
-              className="relative p-8 rounded-lg bg-[#141416] border border-white/10 hover:border-[#C9A227]/40 transition-all duration-300 flex flex-col justify-between group shadow-xl shadow-black/50"
+              className="relative p-8 rounded-lg bg-[#141416]/75 backdrop-blur-md border border-white/10 hover:border-[#C9A227]/40 transition-all duration-300 flex flex-col justify-between group shadow-xl shadow-black/50"
             >
               <div>
                 {/* Number & Line Motif */}

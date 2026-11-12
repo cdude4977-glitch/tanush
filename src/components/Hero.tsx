@@ -11,20 +11,10 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ onExploreAlumni, onNavigateTab }) => {
   return (
     <section className="relative min-h-[92vh] flex flex-col justify-center items-center px-4 sm:px-8 pt-24 pb-12 overflow-hidden">
-      {/* Background Cinematic Visual with Scrim & Golden Trail */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="/images/hero_footprints_trail_1793295219663.jpg"
-          alt="Golden path leading to horizon at dusk"
-          referrerPolicy="no-referrer"
-          className="w-full h-full object-cover object-center scale-105 transition-transform duration-1000 ease-out opacity-45"
-        />
-        {/* Measured scrims to ensure absolute WCAG AA legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-[#080808]/75 to-[#080808]/90" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#C9A227]/12 via-transparent to-transparent pointer-events-none" />
-
+      {/* Ambient Lighting & Golden Trail over Global Auditorium Backdrop */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         {/* Ambient horizon warm glow representing the future */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-[#C9A227]/15 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[380px] bg-[#C9A227]/15 rounded-full blur-[140px] pointer-events-none" />
 
         {/* Animated SVG Path & Footsteps Motif */}
         <svg

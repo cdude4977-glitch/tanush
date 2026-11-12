@@ -8,7 +8,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onExploreAlumni }) => {
   return (
-    <footer className="relative bg-[#050505] text-[#FAFAFA] pt-16 pb-12 px-6 sm:px-8 border-t border-white/5">
+    <footer className="relative bg-[#050505]/75 backdrop-blur-md text-[#FAFAFA] pt-16 pb-12 px-6 sm:px-8 border-t border-white/10">
       {/* Thin Antique Gold Divider */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227] to-transparent opacity-60" />
 
