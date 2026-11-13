@@ -1,6 +1,6 @@
 import React from 'react';
 import { EVENT_CONFIG } from '../config/eventConfig.ts';
-import { ArrowUpRight, Sparkles, Calendar, MapPin, Compass, Info } from 'lucide-react';
+import { ArrowUpRight, Sparkles, Calendar, MapPin, Info } from 'lucide-react';
 import { CountdownTimer } from './CountdownTimer.tsx';
 
 interface HeroProps {
@@ -103,23 +103,13 @@ export const Hero: React.FC<HeroProps> = ({ onExploreAlumni, onNavigateTab }) =>
           </button>
 
           {onNavigateTab && (
-            <>
-              <button
-                onClick={() => onNavigateTab('mentorship')}
-                className="w-full sm:w-auto px-6 py-3.5 text-xs sm:text-sm font-poppins font-medium uppercase tracking-wider text-[#E8D9A8] bg-[#C9A227]/10 hover:bg-[#C9A227]/20 border border-[#C9A227]/30 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <Compass className="w-3.5 h-3.5 text-[#C9A227]" />
-                <span>EXPLORE TRACKS</span>
-              </button>
-
-              <button
-                onClick={() => onNavigateTab('logistics')}
-                className="w-full sm:w-auto px-6 py-3.5 text-xs sm:text-sm font-poppins font-medium uppercase tracking-wider text-[#FAFAFA] bg-white/5 hover:bg-white/10 border border-white/15 rounded-md hover:border-[#C9A227]/50 transition-all cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <Info className="w-3.5 h-3.5 text-[#C9A227]" />
-                <span>EVENT DETAILS</span>
-              </button>
-            </>
+            <button
+              onClick={() => onNavigateTab('logistics')}
+              className="w-full sm:w-auto px-6 py-3.5 text-xs sm:text-sm font-poppins font-medium uppercase tracking-wider text-[#FAFAFA] bg-white/5 hover:bg-white/10 border border-white/15 rounded-md hover:border-[#C9A227]/50 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <Info className="w-3.5 h-3.5 text-[#C9A227]" />
+              <span>EVENT DETAILS</span>
+            </button>
           )}
         </div>
       </div>

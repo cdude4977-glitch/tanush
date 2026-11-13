@@ -8,11 +8,7 @@ import { Navbar, TabId } from './components/Navbar.tsx';
 import { Hero } from './components/Hero.tsx';
 import { StorySection } from './components/StorySection.tsx';
 import { AlumniSection } from './components/AlumniSection.tsx';
-import { MentorshipSection } from './components/MentorshipSection.tsx';
-import { TrackMatcher } from './components/TrackMatcher.tsx';
-import { EventHighlightsSection } from './components/EventHighlightsSection.tsx';
 import { RecognitionSection } from './components/RecognitionSection.tsx';
-import { JourneyTimelineSection } from './components/JourneyTimelineSection.tsx';
 import { EventDetailsSection } from './components/EventDetailsSection.tsx';
 import { GallerySection } from './components/GallerySection.tsx';
 import { FaqSection } from './components/FaqSection.tsx';
@@ -20,13 +16,13 @@ import { ContactSection } from './components/ContactSection.tsx';
 import { Footer } from './components/Footer.tsx';
 import { AlumniDetailModal } from './components/AlumniDetailModal.tsx';
 import { AlumniProfile } from './config/eventConfig.ts';
-import { Compass, Users, Award, Calendar, HelpCircle } from 'lucide-react';
+import { Users, Award, Calendar, HelpCircle } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>(() => {
     // Read initial tab from URL hash if available
     const hash = window.location.hash.replace('#', '') as TabId;
-    const validTabs: TabId[] = ['overview', 'alumni', 'mentorship', 'awards', 'logistics', 'faqs'];
+    const validTabs: TabId[] = ['overview', 'alumni', 'awards', 'logistics', 'faqs'];
     return validTabs.includes(hash) ? hash : 'overview';
   });
 
@@ -43,7 +39,7 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '') as TabId;
-      const validTabs: TabId[] = ['overview', 'alumni', 'mentorship', 'awards', 'logistics', 'faqs'];
+      const validTabs: TabId[] = ['overview', 'alumni', 'awards', 'logistics', 'faqs'];
       if (validTabs.includes(hash)) {
         setActiveTab(hash);
       }
@@ -132,21 +128,6 @@ export default function App() {
                   </button>
 
                   <button
-                    onClick={() => handleSelectTab('mentorship')}
-                    className="p-5 rounded-lg bg-[#141417] border border-white/10 hover:border-[#C9A227]/40 text-left transition-all group cursor-pointer"
-                  >
-                    <div className="w-9 h-9 rounded-full bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] mb-3 group-hover:scale-110 transition-transform">
-                      <Compass className="w-4 h-4" />
-                    </div>
-                    <div className="text-sm font-serif-editorial font-bold text-[#FAFAFA] group-hover:text-[#E8D9A8]">
-                      Guidance Tracks
-                    </div>
-                    <div className="text-[11px] text-[#A1A1AA] mt-1">
-                      Interactive track finder &amp; 5-stage experience pathway.
-                    </div>
-                  </button>
-
-                  <button
                     onClick={() => handleSelectTab('awards')}
                     className="p-5 rounded-lg bg-[#141417] border border-white/10 hover:border-[#C9A227]/40 text-left transition-all group cursor-pointer"
                   >
@@ -157,7 +138,7 @@ export default function App() {
                       Recognition &amp; Honors
                     </div>
                     <div className="text-[11px] text-[#A1A1AA] mt-1">
-                      Excellence citations, mentorship honors &amp; student distinctions.
+                      Alumni Awards 2026 categories &amp; official citation showcase.
                     </div>
                   </button>
 
@@ -172,7 +153,22 @@ export default function App() {
                       Logistics &amp; Gallery
                     </div>
                     <div className="text-[11px] text-[#A1A1AA] mt-1">
-                      14 Nov 2026 venue schedule, campus directions &amp; lightbox.
+                      14 Nov 2026 venue schedule, campus directions &amp; photo gallery.
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => handleSelectTab('faqs')}
+                    className="p-5 rounded-lg bg-[#141417] border border-white/10 hover:border-[#C9A227]/40 text-left transition-all group cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-full bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] mb-3 group-hover:scale-110 transition-transform">
+                      <HelpCircle className="w-4 h-4" />
+                    </div>
+                    <div className="text-sm font-serif-editorial font-bold text-[#FAFAFA] group-hover:text-[#E8D9A8]">
+                      FAQs &amp; Help
+                    </div>
+                    <div className="text-[11px] text-[#A1A1AA] mt-1">
+                      Eligibility guidelines, schedule details &amp; school secretariat contact.
                     </div>
                   </button>
                 </div>
@@ -191,18 +187,6 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 3: MENTORSHIP & GUIDANCE TRACKS */}
-        {activeTab === 'mentorship' && (
-          <div className="animate-in fade-in duration-300 pt-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-8">
-              {/* Interactive Career Cluster & Question Matcher */}
-              <TrackMatcher onNavigateTab={(tab) => handleSelectTab(tab as TabId)} />
-            </div>
-            <MentorshipSection onExploreAlumni={handleExploreAlumni} />
-            <JourneyTimelineSection />
-            <EventHighlightsSection />
-          </div>
-        )}
 
         {/* TAB 4: RECOGNITION & AWARDS */}
         {activeTab === 'awards' && (

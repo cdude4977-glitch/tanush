@@ -56,7 +56,8 @@ export const GallerySection: React.FC = () => {
         {/* Gallery Grid (Mixed Layout) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {EVENT_CONFIG.gallery.map((item, index) => {
-            const isWide = index === 0 || index === 3;
+            const isWide = index === 0 || index === 5 || index === 8;
+            const objectPos = 'objectPosition' in item && item.objectPosition ? item.objectPosition : 'object-center';
             return (
               <div
                 key={item.id}
@@ -70,7 +71,7 @@ export const GallerySection: React.FC = () => {
                     src={item.src}
                     alt={item.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className={`w-full h-full object-cover ${objectPos} group-hover:scale-105 transition-transform duration-700 ease-out`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-transparent to-transparent opacity-80" />
 
