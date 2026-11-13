@@ -11,6 +11,8 @@
  * - Batch Year (Year of Graduation Batch)
  */
 
+import type { AlumniJourneyRecord } from '../services/alumniJourneyService.ts';
+
 export interface RegisteredAlumnus {
   id: string;
   name: string;
@@ -18,6 +20,8 @@ export interface RegisteredAlumnus {
   contactNumber: string;
   timestamp: string;
   batchYear: string;
+  journey?: AlumniJourneyRecord;
+  isCommunityAdded?: boolean;
 }
 
 export const REGISTERED_ALUMNI: RegisteredAlumnus[] = [

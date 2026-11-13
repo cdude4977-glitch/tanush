@@ -14,17 +14,30 @@ import {
   Copy,
   Check,
   GraduationCap,
-  Filter
+  Filter,
+  Briefcase,
+  BookOpen,
+  MapPin,
+  PlusCircle
 } from 'lucide-react';
+import type { AlumniJourneyRecord } from '../services/alumniJourneyService.ts';
 
 interface AlumniSectionProps {
   onSelectAlumni: (alumni: AlumniProfile) => void;
   onOpenQuestionModal: (alumni: AlumniProfile) => void;
+  journeys: AlumniJourneyRecord[];
+  onNavigateToUpdates: () => void;
 }
 
-export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, onOpenQuestionModal }) => {
+export const AlumniSection: React.FC<AlumniSectionProps> = ({
+  onSelectAlumni,
+  onOpenQuestionModal,
+  journeys,
+  onNavigateToUpdates,
+}) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedBatch, setSelectedBatch] = useState<string>('all');
+  const [onlyWithUpdates, setOnlyWithUpdates] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<'default' | 'alphabetical' | 'recent' | 'batch-asc' | 'batch-desc'>('default');
   const [visibleCount, setVisibleCount] = useState<number>(24);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -36,29 +49,100 @@ export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, on
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const mergedAlumni = useMemo<AlumniProfile[]>(() => {
+    const journeyByAlumniId = new Map<string, AlumniJourneyRecord>();
+    const communityEntries: AlumniProfile[] = [];
+
+    for (const j of journeys) {
+      if (j.alumniId && j.alumniId !== 'community') {
+        if (!journeyByAlumniId.has(j.alumniId)) {
+          journeyByAlumniId.set(j.alumniId, j);
+        }
+      } else {
+        communityEntries.push({
+          id: j.id,
+          name: j.alumniName,
+          email: '',
+          contactNumber: '',
+          timestamp: new Date(j.updatedAtMs).toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          }),
+          batchYear: j.batchYear,
+          journey: j,
+          isCommunityAdded: true,
+        });
+      }
+    }
+
+    const enrichedRegistered = EVENT_CONFIG.alumniProfiles.map((profile) => {
+      const matchedJourney =
+        journeyByAlumniId.get(profile.id) ||
+        journeys.find(
+          (j) =>
+            j.alumniId === 'community' &&
+            j.alumniName.trim().toLowerCase() === profile.name.trim().toLowerCase() &&
+            j.batchYear.trim() === profile.batchYear.trim()
+        );
+      return matchedJourney ? { ...profile, journey: matchedJourney } : profile;
+    });
+
+    // Exclude community entries that matched a static registered alumnus by name + batch
+    const unmatchedCommunity = communityEntries.filter(
+      (c) =>
+        !EVENT_CONFIG.alumniProfiles.some(
+          (p) =>
+            p.name.trim().toLowerCase() === c.name.trim().toLowerCase() &&
+            p.batchYear.trim() === c.batchYear.trim()
+        )
+    );
+
+    return [...unmatchedCommunity, ...enrichedRegistered];
+  }, [journeys]);
+
+  const withUpdatesCount = useMemo(
+    () => mergedAlumni.filter((p) => Boolean(p.journey)).length,
+    [mergedAlumni]
+  );
+
   const uniqueBatches = useMemo(() => {
-    const batches = Array.from(new Set(EVENT_CONFIG.alumniProfiles.map((p) => p.batchYear)));
+    const batches = Array.from(new Set(mergedAlumni.map((p) => p.batchYear).filter(Boolean)));
     return batches.sort();
-  }, []);
+  }, [mergedAlumni]);
 
   const filteredAlumni = useMemo(() => {
-    let list = [...EVENT_CONFIG.alumniProfiles];
+    let list = [...mergedAlumni];
+
+    // Only with career/college updates toggle
+    if (onlyWithUpdates) {
+      list = list.filter((profile) => Boolean(profile.journey));
+    }
 
     // Batch filter
     if (selectedBatch !== 'all') {
       list = list.filter((profile) => profile.batchYear === selectedBatch);
     }
 
-    // Text search
+    // Text search (name, batch, email, phone, plus submitted profession/college/stream/notes)
     const q = searchQuery.toLowerCase().trim();
     if (q) {
-      list = list.filter(
-        (profile) =>
+      list = list.filter((profile) => {
+        const j = profile.journey;
+        return (
           profile.name.toLowerCase().includes(q) ||
           profile.email.toLowerCase().includes(q) ||
           profile.contactNumber.toLowerCase().includes(q) ||
-          profile.batchYear.toLowerCase().includes(q)
-      );
+          profile.batchYear.toLowerCase().includes(q) ||
+          (j &&
+            (j.professionOrRole.toLowerCase().includes(q) ||
+              j.collegeOrOrganization.toLowerCase().includes(q) ||
+              j.streamOrField.toLowerCase().includes(q) ||
+              j.pursuitCategory.toLowerCase().includes(q) ||
+              j.currentLocation.toLowerCase().includes(q) ||
+              j.whatImDoing.toLowerCase().includes(q)))
+        );
+      });
     }
 
     // Sorting
@@ -73,7 +157,7 @@ export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, on
     }
 
     return list;
-  }, [searchQuery, selectedBatch, sortOrder]);
+  }, [mergedAlumni, onlyWithUpdates, searchQuery, selectedBatch, sortOrder]);
 
   const displayedAlumni = filteredAlumni.slice(0, visibleCount);
 
@@ -102,7 +186,7 @@ export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, on
               <Search className="w-4 h-4 text-[#71717A] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search name, batch, email..."
+                placeholder="Search name, batch, profession, college..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -124,9 +208,9 @@ export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, on
                 className="bg-transparent text-xs text-[#FAFAFA] focus:outline-none cursor-pointer pr-2"
                 aria-label="Filter by Graduation Batch"
               >
-                <option value="all" className="bg-[#141416] text-[#FAFAFA]">All Batches ({EVENT_CONFIG.alumniProfiles.length})</option>
+                <option value="all" className="bg-[#141416] text-[#FAFAFA]">All Batches ({mergedAlumni.length})</option>
                 {uniqueBatches.map((batch) => {
-                  const count = EVENT_CONFIG.alumniProfiles.filter((p) => p.batchYear === batch).length;
+                  const count = mergedAlumni.filter((p) => p.batchYear === batch).length;
                   return (
                     <option key={batch} value={batch} className="bg-[#141416] text-[#FAFAFA]">
                       Batch {batch} ({count})
@@ -202,10 +286,24 @@ export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, on
                 : 'bg-white/5 text-[#A1A1AA] hover:text-[#FAFAFA] border border-white/5'
             }`}
           >
-            All ({EVENT_CONFIG.alumniProfiles.length})
+            All ({mergedAlumni.length})
+          </button>
+          <button
+            onClick={() => {
+              setOnlyWithUpdates((prev) => !prev);
+              setVisibleCount(24);
+            }}
+            className={`px-2.5 py-1 rounded text-[11px] font-mono transition-all cursor-pointer shrink-0 flex items-center gap-1 ${
+              onlyWithUpdates
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold'
+                : 'bg-white/5 text-[#E8D9A8] hover:text-[#FAFAFA] border border-[#C9A227]/30'
+            }`}
+          >
+            <Briefcase className="w-3 h-3" />
+            <span>With Career / College Info ({withUpdatesCount})</span>
           </button>
           {uniqueBatches.map((batch) => {
-            const count = EVENT_CONFIG.alumniProfiles.filter((p) => p.batchYear === batch).length;
+            const count = mergedAlumni.filter((p) => p.batchYear === batch).length;
             const isSelected = selectedBatch === batch;
             return (
               <button
@@ -229,26 +327,30 @@ export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, on
           })}
         </div>
 
-        {/* Official Registry Status Banner */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 mb-8 rounded-lg bg-gradient-to-r from-[#18160E] to-[#111114] border border-[#C9A227]/30 text-xs">
+        {/* Official Registry Status Banner + CTA to Share Updates */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 mb-8 rounded-lg bg-gradient-to-r from-[#18160E] to-[#111114] border border-[#C9A227]/30 text-xs">
           <div className="flex items-start sm:items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-[#C9A227]/20 border border-[#C9A227]/40 flex items-center justify-center text-[#E8D9A8] shrink-0">
               <CheckCircle2 className="w-4 h-4 text-[#C9A227]" />
             </div>
             <div>
               <span className="font-semibold text-[#FAFAFA] block sm:inline">
-                Synchronized Form Registry:
+                Live Alumni Registry:
               </span>{' '}
               <span className="text-[#A1A1AA]">
-                Displaying {filteredAlumni.length} verified alumni across graduating batches (2013 through 2028).
+                Displaying {filteredAlumni.length} alumni across graduating batches (2013–2028) · {withUpdatesCount} with recorded profession/college updates.
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0 font-mono text-[11px] text-[#E8D9A8]">
-            <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
-            <span>125 Verified Registrations</span>
-          </div>
+          <button
+            type="button"
+            onClick={onNavigateToUpdates}
+            className="self-start md:self-auto px-4 py-2 rounded-lg text-xs font-poppins font-semibold uppercase tracking-wider text-[#080808] bg-gradient-to-r from-[#E8D9A8] via-[#C9A227] to-[#B38F1F] hover:shadow-[0_0_20px_rgba(201,162,39,0.35)] transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+          >
+            <PlusCircle className="w-3.5 h-3.5" />
+            <span>Add / Update Your Profession &amp; College</span>
+          </button>
         </div>
 
         {/* Alumni Cards Grid */}
@@ -283,56 +385,103 @@ export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, on
                         {alumni.name}
                       </h3>
                       <div className="text-[11px] text-[#71717A] mt-0.5 font-mono">
-                        ID: {alumni.id.toUpperCase()} · Shalom Hills
+                        {alumni.isCommunityAdded ? 'Community Profile · Shalom Hills' : `ID: ${alumni.id.toUpperCase()} · Shalom Hills`}
                       </div>
                     </div>
                   </div>
 
-                  {/* Verified Contact Details (From Sheet) */}
-                  <div className="space-y-2 py-3 px-3.5 rounded-md bg-white/[0.02] border border-white/5 my-3 text-xs text-[#A1A1AA]">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2 truncate">
-                        <Mail className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
-                        <span className="truncate text-[11px] font-mono text-[#FAFAFA]/90">{alumni.email}</span>
+                  {/* Submitted Profession / College / Stream (only shown when recorded) */}
+                  {alumni.journey && (
+                    <div className="space-y-1.5 py-3 px-3.5 rounded-md bg-[#C9A227]/10 border border-[#C9A227]/30 my-3 text-xs">
+                      <div className="flex items-center justify-between gap-2 pb-1 border-b border-[#C9A227]/20">
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-[#C9A227] font-semibold">
+                          {alumni.journey.pursuitCategory}
+                        </span>
+                        <Sparkles className="w-3 h-3 text-[#C9A227]" />
                       </div>
-                      <button
-                        onClick={(e) => handleCopyContact(alumni.email, `${alumni.id}-email`, e)}
-                        className="text-[#71717A] hover:text-[#C9A227] p-1 cursor-pointer shrink-0"
-                        title="Copy email"
-                        aria-label="Copy Email"
-                      >
-                        {copiedId === `${alumni.id}-email` ? (
-                          <Check className="w-3 h-3 text-emerald-400" />
-                        ) : (
-                          <Copy className="w-3 h-3" />
-                        )}
-                      </button>
+                      {alumni.journey.professionOrRole && (
+                        <div className="flex items-start gap-2 text-[#FAFAFA]">
+                          <Briefcase className="w-3.5 h-3.5 text-[#C9A227] shrink-0 mt-0.5" />
+                          <span className="font-medium leading-snug">{alumni.journey.professionOrRole}</span>
+                        </div>
+                      )}
+                      {alumni.journey.collegeOrOrganization && (
+                        <div className="flex items-start gap-2 text-[#E8D9A8]">
+                          <GraduationCap className="w-3.5 h-3.5 text-[#C9A227] shrink-0 mt-0.5" />
+                          <span className="leading-snug">{alumni.journey.collegeOrOrganization}</span>
+                        </div>
+                      )}
+                      {alumni.journey.streamOrField && (
+                        <div className="flex items-start gap-2 text-[#A1A1AA]">
+                          <BookOpen className="w-3.5 h-3.5 text-[#C9A227] shrink-0 mt-0.5" />
+                          <span className="leading-snug">{alumni.journey.streamOrField}</span>
+                        </div>
+                      )}
+                      {alumni.journey.currentLocation && (
+                        <div className="flex items-start gap-2 text-[#A1A1AA]">
+                          <MapPin className="w-3.5 h-3.5 text-[#C9A227] shrink-0 mt-0.5" />
+                          <span className="leading-snug">{alumni.journey.currentLocation}</span>
+                        </div>
+                      )}
+                      {alumni.journey.whatImDoing && (
+                        <p className="text-[11px] text-[#A1A1AA] line-clamp-2 pt-1 italic border-t border-white/5">
+                          “{alumni.journey.whatImDoing}”
+                        </p>
+                      )}
                     </div>
+                  )}
 
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
-                        <span className="text-[11px] font-mono text-[#FAFAFA]/90">{alumni.contactNumber}</span>
-                      </div>
-                      <button
-                        onClick={(e) => handleCopyContact(alumni.contactNumber, `${alumni.id}-phone`, e)}
-                        className="text-[#71717A] hover:text-[#C9A227] p-1 cursor-pointer shrink-0"
-                        title="Copy phone number"
-                        aria-label="Copy Phone"
-                      >
-                        {copiedId === `${alumni.id}-phone` ? (
-                          <Check className="w-3 h-3 text-emerald-400" />
-                        ) : (
-                          <Copy className="w-3 h-3" />
-                        )}
-                      </button>
+                  {/* Verified Contact Details (only shown when present) */}
+                  {(alumni.email || alumni.contactNumber) && (
+                    <div className="space-y-2 py-3 px-3.5 rounded-md bg-white/[0.02] border border-white/5 my-3 text-xs text-[#A1A1AA]">
+                      {alumni.email && (
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 truncate">
+                            <Mail className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                            <span className="truncate text-[11px] font-mono text-[#FAFAFA]/90">{alumni.email}</span>
+                          </div>
+                          <button
+                            onClick={(e) => handleCopyContact(alumni.email, `${alumni.id}-email`, e)}
+                            className="text-[#71717A] hover:text-[#C9A227] p-1 cursor-pointer shrink-0"
+                            title="Copy email"
+                            aria-label="Copy Email"
+                          >
+                            {copiedId === `${alumni.id}-email` ? (
+                              <Check className="w-3 h-3 text-emerald-400" />
+                            ) : (
+                              <Copy className="w-3 h-3" />
+                            )}
+                          </button>
+                        </div>
+                      )}
+
+                      {alumni.contactNumber && (
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <Phone className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                            <span className="text-[11px] font-mono text-[#FAFAFA]/90">{alumni.contactNumber}</span>
+                          </div>
+                          <button
+                            onClick={(e) => handleCopyContact(alumni.contactNumber, `${alumni.id}-phone`, e)}
+                            className="text-[#71717A] hover:text-[#C9A227] p-1 cursor-pointer shrink-0"
+                            title="Copy phone number"
+                            aria-label="Copy Phone"
+                          >
+                            {copiedId === `${alumni.id}-phone` ? (
+                              <Check className="w-3 h-3 text-emerald-400" />
+                            ) : (
+                              <Copy className="w-3 h-3" />
+                            )}
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
 
                   {/* Form Submission Timestamp */}
                   <div className="text-[10px] text-[#71717A] flex items-center gap-1.5 mb-1 px-1">
                     <Calendar className="w-3 h-3 text-[#C9A227]/70" />
-                    <span>Registered: {alumni.timestamp}</span>
+                    <span>{alumni.isCommunityAdded ? `Updated: ${alumni.timestamp}` : `Registered: ${alumni.timestamp}`}</span>
                   </div>
                 </div>
 
@@ -381,11 +530,12 @@ export const AlumniSection: React.FC<AlumniSectionProps> = ({ onSelectAlumni, on
               onClick={() => {
                 setSearchQuery('');
                 setSelectedBatch('all');
+                setOnlyWithUpdates(false);
                 setSortOrder('default');
               }}
               className="mt-4 px-4 py-2 text-xs text-[#C9A227] hover:underline cursor-pointer"
             >
-              Reset Search & Batch Filter
+              Reset Search &amp; Batch Filter
             </button>
           </div>
         )}

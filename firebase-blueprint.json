@@ -1,0 +1,125 @@
+{
+  "entities": {
+    "AlumniJourney": {
+      "title": "Alumni Journey Submission",
+      "description": "Public career, college, stream, and current pursuit record submitted by a Shalom Hills International School alumnus for display in the Alumni Directory.",
+      "type": "object",
+      "properties": {
+        "alumniId": {
+          "type": "string",
+          "description": "Linked ID from the verified registered alumni list (e.g., alm-12) or 'community' for new alumni.",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "alumniName": {
+          "type": "string",
+          "description": "Full name of the alumnus.",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "batchYear": {
+          "type": "string",
+          "description": "Graduation batch year or range (e.g., 2018-19).",
+          "minLength": 4,
+          "maxLength": 20
+        },
+        "pursuitCategory": {
+          "type": "string",
+          "description": "Primary current path category.",
+          "enum": [
+            "Working Professional",
+            "College / University Student",
+            "Entrepreneur / Founder",
+            "Research & Higher Studies",
+            "Creative / Independent",
+            "Other"
+          ],
+          "maxLength": 50
+        },
+        "professionOrRole": {
+          "type": "string",
+          "description": "Current job title, profession, degree program, or role.",
+          "minLength": 0,
+          "maxLength": 150
+        },
+        "collegeOrOrganization": {
+          "type": "string",
+          "description": "Current college, university, company, or organization.",
+          "minLength": 0,
+          "maxLength": 180
+        },
+        "streamOrField": {
+          "type": "string",
+          "description": "Academic stream, major, or industry domain (e.g., Computer Science, Medicine, Commerce, Law).",
+          "minLength": 0,
+          "maxLength": 150
+        },
+        "currentLocation": {
+          "type": "string",
+          "description": "Current city or country.",
+          "minLength": 0,
+          "maxLength": 120
+        },
+        "whatImDoing": {
+          "type": "string",
+          "description": "Open description of what the alumnus is currently working on, studying, or pursuing.",
+          "minLength": 0,
+          "maxLength": 600
+        },
+        "visibility": {
+          "type": "string",
+          "description": "Directory visibility flag.",
+          "enum": ["public"]
+        },
+        "authorUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the alumnus who submitted this entry.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "authorDisplayName": {
+          "type": "string",
+          "description": "Display name of the authenticated submitter.",
+          "minLength": 0,
+          "maxLength": 120
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the record was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the record was last updated."
+        }
+      },
+      "required": [
+        "alumniId",
+        "alumniName",
+        "batchYear",
+        "pursuitCategory",
+        "professionOrRole",
+        "collegeOrOrganization",
+        "streamOrField",
+        "currentLocation",
+        "whatImDoing",
+        "visibility",
+        "authorUid",
+        "authorDisplayName",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/alumni_journeys/{journeyId}": {
+      "schema": {
+        "$ref": "#/entities/AlumniJourney"
+      },
+      "description": "Stores alumni career, college, stream, and current pursuit submissions displayed on the Alumni Directory."
+    }
+  }
+}

@@ -1,0 +1,150 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: Deny all access by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reusable Hardened Primitives
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email_verified == true && request.auth.token.email == 'cdude4977@gmail.com') ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidAlumniJourney(data) {
+      return data.keys().hasAll([
+          'alumniId',
+          'alumniName',
+          'batchYear',
+          'pursuitCategory',
+          'professionOrRole',
+          'collegeOrOrganization',
+          'streamOrField',
+          'currentLocation',
+          'whatImDoing',
+          'visibility',
+          'authorUid',
+          'authorDisplayName',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'alumniId',
+          'alumniName',
+          'batchYear',
+          'pursuitCategory',
+          'professionOrRole',
+          'collegeOrOrganization',
+          'streamOrField',
+          'currentLocation',
+          'whatImDoing',
+          'visibility',
+          'authorUid',
+          'authorDisplayName',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.alumniId is string && data.alumniId.size() >= 1 && data.alumniId.size() <= 64 && data.alumniId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.alumniName is string && data.alumniName.size() >= 2 && data.alumniName.size() <= 120
+        && data.batchYear is string && data.batchYear.size() >= 4 && data.batchYear.size() <= 20
+        && data.pursuitCategory is string && data.pursuitCategory.size() >= 3 && data.pursuitCategory.size() <= 50
+        && data.pursuitCategory in [
+          'Working Professional',
+          'College / University Student',
+          'Entrepreneur / Founder',
+          'Research & Higher Studies',
+          'Creative / Independent',
+          'Other'
+        ]
+        && data.professionOrRole is string && data.professionOrRole.size() <= 150
+        && data.collegeOrOrganization is string && data.collegeOrOrganization.size() <= 180
+        && data.streamOrField is string && data.streamOrField.size() <= 150
+        && data.currentLocation is string && data.currentLocation.size() <= 120
+        && data.whatImDoing is string && data.whatImDoing.size() <= 600
+        && (
+          data.professionOrRole.size() > 0 ||
+          data.collegeOrOrganization.size() > 0 ||
+          data.streamOrField.size() > 0 ||
+          data.whatImDoing.size() > 0
+        )
+        && data.visibility is string && data.visibility == 'public'
+        && data.authorUid is string && data.authorUid.size() >= 1 && data.authorUid.size() <= 128 && data.authorUid.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.authorDisplayName is string && data.authorDisplayName.size() <= 120
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    match /alumni_journeys/{journeyId} {
+      // Public non-PII alumni directory records can be read by visitors; private/owner check also included
+      allow get: if isValidId(journeyId) && (
+        existing().visibility == 'public' ||
+        (isSignedIn() && existing().authorUid == request.auth.uid) ||
+        isAdmin()
+      );
+
+      // Explicitly evaluate resource.data on list queries (client queries where visibility == 'public')
+      allow list: if resource.data.visibility == 'public' || (isSignedIn() && resource.data.authorUid == request.auth.uid);
+
+      // Verified authenticated users can create their own alumni journey submission
+      allow create: if isValidId(journeyId)
+        && isVerifiedUser()
+        && isValidAlumniJourney(incoming())
+        && incoming().authorUid == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      // Owner or Admin can update an alumni journey submission with strict immutable & affectedKeys guards
+      allow update: if isValidId(journeyId)
+        && isVerifiedUser()
+        && isValidAlumniJourney(incoming())
+        && (existing().authorUid == request.auth.uid || isAdmin())
+        && incoming().authorUid == existing().authorUid
+        && incoming().createdAt == existing().createdAt
+        && incoming().visibility == existing().visibility
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'alumniId',
+            'alumniName',
+            'batchYear',
+            'pursuitCategory',
+            'professionOrRole',
+            'collegeOrOrganization',
+            'streamOrField',
+            'currentLocation',
+            'whatImDoing',
+            'updatedAt'
+          ])
+        );
+
+      // Owner or Admin can delete their own submission
+      allow delete: if isValidId(journeyId)
+        && isVerifiedUser()
+        && (existing().authorUid == request.auth.uid || isAdmin());
+    }
+  }
+}

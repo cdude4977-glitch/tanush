@@ -44,6 +44,9 @@ export const Footer: React.FC<FooterProps> = ({ onExploreAlumni }) => {
                 <a href="#alumni" className="hover:text-[#FAFAFA] transition-colors">Alumni Directory</a>
               </li>
               <li>
+                <a href="#updates" className="hover:text-[#FAFAFA] transition-colors">Submit Profession &amp; College</a>
+              </li>
+              <li>
                 <a href="#awards" className="hover:text-[#FAFAFA] transition-colors">Honors &amp; Recognition</a>
               </li>
               <li>

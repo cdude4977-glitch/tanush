@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { EVENT_CONFIG } from '../config/eventConfig.ts';
 import { Menu, X, ArrowUpRight, Users } from 'lucide-react';
 
-export type TabId = 'overview' | 'alumni' | 'awards' | 'logistics' | 'faqs';
+export type TabId = 'overview' | 'alumni' | 'updates' | 'awards' | 'logistics' | 'faqs';
 
 interface NavbarProps {
   activeTab: TabId;
@@ -27,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const navTabs: { id: TabId; label: string; shortLabel: string }[] = [
     { id: 'overview', label: 'Overview', shortLabel: 'Overview' },
     { id: 'alumni', label: 'Alumni Directory', shortLabel: 'Alumni' },
+    { id: 'updates', label: 'Alumni Updates', shortLabel: 'Updates' },
     { id: 'awards', label: 'Recognition', shortLabel: 'Awards' },
     { id: 'logistics', label: 'Details & Gallery', shortLabel: 'Details' },
     { id: 'faqs', label: 'FAQs & Help', shortLabel: 'FAQs' },
