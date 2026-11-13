@@ -93,6 +93,13 @@ export const Footer: React.FC<FooterProps> = ({ onExploreAlumni }) => {
             &copy; 2026 Shalom Hills International School. All rights reserved.
           </p>
         </div>
+
+        {/* Page Credits */}
+        <div className="mt-6 pt-5 border-t border-white/5 text-center">
+          <p className="text-xs font-medium tracking-wider text-[#E8D9A8]">
+            Made By : Tanush Kansal(XI-B)
+          </p>
+        </div>
       </div>
     </footer>
   );
